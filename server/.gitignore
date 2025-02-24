@@ -2,3 +2,5 @@
 .env*.dev
 *.config.ts
 LEARNED.md
+
+!eslint.config.ts
