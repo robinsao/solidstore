@@ -1,0 +1,11 @@
+{
+  "recursive": "true",
+  "require": ["should", "ts-node/register", "test/hooks.ts"],
+  "loader": ["ts-node/esm"],
+  "reporter": "spec",
+  "spec": ["./test/**/*.spec.ts"],
+  "watchFiles": ["./**/*.ts"],
+  "watch": true,
+  "bail": true,
+  "forbidPending": true
+}

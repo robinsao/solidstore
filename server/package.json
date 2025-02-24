@@ -1,0 +1,50 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test-db": "dotenvx run --env-file=.env.dev -- tsnd --transpile-only --respawn db",
+    "dev": "dotenvx run --env-file=.env.dev -- tsnd --transpile-only --respawn run-app.ts",
+    "test": "dotenvx run --env-file=.env.dev -- mocha",
+    "typeorm": "dotenvx run --env-file=.env.dev -- typeorm-ts-node-commonjs",
+    "lint": "eslint ./**",
+    "prettier": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.645.0",
+    "@aws-sdk/s3-request-presigner": "^3.738.0",
+    "@dotenvx/dotenvx": "^1.14.0",
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-oauth2-jwt-bearer": "^1.6.0",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "server": "file:"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@eslint/js": "^9.21.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.13.4",
+    "eslint": "^9.21.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "jiti": "^2.4.2",
+    "mocha": "^11.1.0",
+    "pg": "^8.13.3",
+    "prettier": "^3.5.1",
+    "should": "^13.2.3",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typeorm": "^0.3.20",
+    "typescript-eslint": "^8.24.1"
+  }
+}

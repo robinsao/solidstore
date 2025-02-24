@@ -1,0 +1,9 @@
+localhost:5213 {
+	# client
+	reverse_proxy localhost:3000
+}
+
+localhost:5313 {
+	# server
+	reverse_proxy localhost:3010
+}

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "typeRoots": ["typings", "./node_modules/@types", "./node_modules/should"],
+    "types": ["mocha", "should", "node"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "ts-node": {
+    "files": true
+  },
+  "exclude": ["node_modules"]
+}

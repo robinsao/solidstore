@@ -1,0 +1,7 @@
+**/*.env.*
+!**/*.env*.template
+*.bat
+.next
+**/*.code-workspace
+PLAN.md
+**/*.vscode
