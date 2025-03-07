@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "set NODE_EXTRA_CA_CERTS=C:/Users/Raksa/AppData/Roaming/Caddy/pki/authorities/local/root.pem && next dev",
+    "dev": "next dev",
     "build": "next build",
-    "start": "set NODE_EXTRA_CA_CERTS=C:/Users/Raksa/AppData/Roaming/Caddy/pki/authorities/local/root.pem && next start",
+    "start": "next start",
     "lint": "next lint --no-cache",
     "prettier": "prettier --write ."
   },
