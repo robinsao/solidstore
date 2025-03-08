@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test-db": "dotenvx run -f .env.dev -- tsnd --transpile-only --respawn db",
-    "dev": "dotenvx run -f .env.dev -- tsnd --transpile-only --respawn run-app.ts",
-    "test": "dotenvx run -f .env.dev -- mocha",
-    "typeorm": "dotenvx run -f .env.dev -- typeorm-ts-node-commonjs",
+    "test-db": "dotenvx run -f .env -- tsnd --transpile-only --respawn db",
+    "dev": "dotenvx run -f .env -- tsnd --transpile-only --respawn run-app.ts",
+    "test": "dotenvx run -f .env -- mocha",
+    "typeorm": "dotenvx run -f .env -- typeorm-ts-node-commonjs",
     "lint": "eslint ./**",
+    "docker-run": "dotenvx run -f .env -- typeorm-ts-node-commonjs migration:run -d ./db-data-source.ts && dotenvx run -f .env -- tsnd --transpile-only --respawn run-app.ts",
     "prettier": "prettier --write ."
   },
   "keywords": [],

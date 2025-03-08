@@ -1,0 +1,15 @@
+192.168.0.5:5213 {
+	# server
+	reverse_proxy 192.168.0.2:3000
+}
+
+# Allows access from browers on host machine
+localhost:5213 {
+	# server
+	reverse_proxy 192.168.0.2:3000
+}
+
+192.168.0.5:5313 {
+	# server
+	reverse_proxy 192.168.0.3:3010
+}

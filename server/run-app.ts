@@ -15,6 +15,6 @@ function cleanup() {
   });
 }
 
-const sigCleanup = ["SIGINT", "SIGTERM", "SIGKILL"];
+const sigCleanup = ["SIGINT", "SIGTERM"];
 
 sigCleanup.forEach((sig) => process.on(sig, cleanup));
