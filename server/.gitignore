@@ -5,3 +5,4 @@ LEARNED.md
 
 !eslint.config.ts
 !.env.dev.template
+!docker/.env.dev

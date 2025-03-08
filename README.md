@@ -16,10 +16,10 @@ This project uses:
 # Install
 
 ```
-git clone https://github.com/RaksaRS/solidstore
+git clone https://github.com/robinsao/solidstore
 ```
 
-## Configuration
+Then configure
 
 - Auth0:
 
@@ -54,50 +54,14 @@ git clone https://github.com/RaksaRS/solidstore
   ]
   ```
 
-- Caddy: Manually install caddy.
+Next, configure the environment variables for the client app and the server. Follow [this link](https://auth0.com/docs/quickstart/webapp/nextjs/01-login) to configure the client.
 
-- PostgreSQL: Run the migration script
-  ```
-  cd server
-  pnpm typeorm migration:run -d ./db-data-source.ts
-  ```
-
-Next, configure the environment variables.
-
-Then, with **_admin/root privilege_**, install a local PKI
+To run the app, you can run
 
 ```
-cd solidstore
-caddy start
+docker compose -d
 ```
 
-The above installs a local PKI and adds the root CA to your local trust store. If the root CA is not in your local trust store, you can run `caddy trust` with **_admin/root privilege_** to explictly add it to your local trust store.
+The client should be accessible on `https://localhost:5213` and the server on `https://localhost:5313`.
 
-Finally, build and serve!
-
-```
-# Build and frontend
-cd client
-pnpm build
-pnpm start
-
-# Run backend:
-cd ../server
-pnpm dev
-```
-
-To run tests for the frontend, run
-
-```
-# Since tests are written to work w/ HTTPS, make sure to start caddy if it's not yet started
-caddy start
-
-# Run the tests
-pnpm test
-```
-
-To run tests for the backend, you don't need to run caddy
-
-```
-pnpm test
-```
+Accessing `https://localhost:5213` on a browser will give you an error. On Chrome, it says "Your connection is not private". This is because the self-signed CA -- which is located at `caddy\data\caddy\pki\authorities\local\root.crt` -- is not trusted. You can choose to add this to your local trust store, or just by pass the certificate check in your browser -- in Chrome, you can click on "Advanced" and then "Proceed to localhost (unsafe)".

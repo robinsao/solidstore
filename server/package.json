@@ -9,6 +9,7 @@
     "test": "dotenvx run -f .env.dev -- mocha",
     "typeorm": "dotenvx run -f .env.dev -- typeorm-ts-node-commonjs",
     "lint": "eslint ./**",
+    "docker-run": "dotenvx run -f .env.dev -- typeorm-ts-node-commonjs migration:run -d ./db-data-source.ts && dotenvx run -f .env.dev -- tsnd --transpile-only --respawn run-app.ts",
     "prettier": "prettier --write ."
   },
   "keywords": [],

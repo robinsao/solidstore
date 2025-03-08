@@ -1,0 +1,9 @@
+*/.next
+client/.vscode
+client/node_modules
+client/.env.local
+client/*.template
+client/.gitignore
+client/PLANS.md
+server
+db

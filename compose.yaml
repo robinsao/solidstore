@@ -1,0 +1,67 @@
+name: solidstore
+
+services:
+  client:
+    container_name: solidstore-client
+    build:
+      context: .
+      dockerfile: client/client.Dockerfile
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.2
+
+  server:
+    container_name: solidstore-server
+    build:
+      context: .
+      dockerfile: server/server.Dockerfile
+    expose:
+      - "3010"
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.3
+    depends_on:
+      - postgres
+      - caddy
+
+  postgres:
+    container_name: solidstore-db
+    image: postgres
+    volumes:
+      # Contains a .sql script containing "CREATE DATABASE solidstore" command
+      - ./db/docker/scripts:/docker-entrypoint-initdb.d
+      # Persists records
+      - ./db/docker/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=a
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.4
+
+  caddy:
+    container_name: solidstore-caddy
+    image: caddy
+    volumes:
+      - ./caddy:/etc/caddy
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+    expose:
+      - "5213"
+      - "5313"
+    ports:
+      - 5213:5213
+      - 5313:5313
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.5
+
+networks:
+  solidstore-network:
+    name: solidstore-network
+    enable_ipv6: false
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
+          ip_range: 192.168.0.0/24
+          gateway: 192.168.0.1
