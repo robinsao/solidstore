@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test-db": "dotenvx run --env-file=.env.dev -- tsnd --transpile-only --respawn db",
-    "dev": "dotenvx run --env-file=.env.dev -- tsnd --transpile-only --respawn run-app.ts",
-    "test": "dotenvx run --env-file=.env.dev -- mocha",
-    "typeorm": "dotenvx run --env-file=.env.dev -- typeorm-ts-node-commonjs",
+    "test-db": "dotenvx run -f .env.dev -- tsnd --transpile-only --respawn db",
+    "dev": "dotenvx run -f .env.dev -- tsnd --transpile-only --respawn run-app.ts",
+    "test": "dotenvx run -f .env.dev -- mocha",
+    "typeorm": "dotenvx run -f .env.dev -- typeorm-ts-node-commonjs",
     "lint": "eslint ./**",
     "prettier": "prettier --write ."
   },
