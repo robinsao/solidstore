@@ -5,13 +5,15 @@ services:
     container_name: solidstore-client
     build:
       context: .
-      dockerfile: client/client.Dockerfile
+      dockerfile: client/docker/client.Dockerfile
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.2
     depends_on:
-      - server
-      - caddy
+      server:
+        condition: service_healthy
+      caddy:
+        condition: service_healthy
 
   server:
     container_name: solidstore-server
@@ -24,33 +26,30 @@ services:
       solidstore-network:
         ipv4_address: 192.168.0.3
     depends_on:
-      - postgres
-      - caddy
+      postgres:
+        condition: service_healthy
 
   postgres:
     container_name: solidstore-db
-    image: postgres
+    build:
+      dockerfile: Dockerfile
+      context: db
     volumes:
       # Persists records
       - ./db/docker/data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=a
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=solidstore
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.4
 
   caddy:
     container_name: solidstore-caddy
-    image: caddy
+    build:
+      dockerfile: Dockerfile
+      context: caddy
     volumes:
       - ./caddy:/etc/caddy
       - ./caddy/data:/data
       - ./caddy/config:/config
-    expose:
-      - "5213"
-      - "5313"
     ports:
       - 5213:5213
       - 5313:5313
