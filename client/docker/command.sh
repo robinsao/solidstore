@@ -1,5 +1,4 @@
-apt-get update
-apt-get install -y curl ca-certificates
+#!/bin/bash
 curl http://192.168.0.5:2020/root.crt > /usr/local/share/ca-certificates/caddy-root.crt
 update-ca-certificates
 

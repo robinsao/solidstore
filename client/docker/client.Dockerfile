@@ -18,9 +18,14 @@ COPY --from=nodedeps /app/.next/static ./.next/static
 COPY --from=nodedeps /app/public ./public
 COPY client/docker/command.sh .
 
+RUN apt-get update && \
+    apt-get install -y curl ca-certificates
+
 EXPOSE 3000
 
 ENV NODE_ENV=production
 ENV PORT=3000
+
+HEALTHCHECK --interval=20s --timeout=30s --retries=3 CMD [ "curl", "http://192.168.0.5:2020/root.crt" ]
 
 CMD ["./command.sh"]
