@@ -20,8 +20,6 @@ services:
     build:
       context: .
       dockerfile: server/server.Dockerfile
-    expose:
-      - "3010"
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.3
