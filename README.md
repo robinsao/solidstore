@@ -1,8 +1,8 @@
 # Description
 
 A simple cloud storage app.
-![](./client/public/app-light.png)
-![](./client/public/app-dark.png)
+
+![](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDNrOGQzdzhvMmk0bjIzeWp3YmphN280NnV6ZHc1dTcwN2s3bnNsOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7UHwWI5BikT2HNvzGz/giphy.gif)
 
 This project uses:
 
