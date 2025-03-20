@@ -14,6 +14,6 @@ EXPOSE 3010
 RUN apt-get update && \
     apt-get install -y curl
 
-HEALTHCHECK --interval=30s --timeout=10s --retries=4 CMD [ "curl", "http://localhost:3010" ]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --start-interval=5s --retries=4 CMD [ "curl", "http://localhost:3010" ]
 
 CMD pnpm docker-run
