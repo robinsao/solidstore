@@ -62,6 +62,12 @@ To run the app, you can run
 docker compose -d
 ```
 
-The client should be accessible on `https://localhost:5213` and the server on `https://localhost:5313`.
+There's also the development environment where hot reload is enabled. To run the development environment, you can run
+
+```
+docker compose -f compose.dev.yaml up --watch
+```
+
+The client should be accessible on `https://localhost:5213` and the server on `https://localhost:5313` regardless if you're running in the normal environment or development environment.
 
 Accessing `https://localhost:5213` on a browser will give you an error. On Chrome, it says "Your connection is not private". This is because the self-signed CA -- which is located at `caddy\data\caddy\pki\authorities\local\root.crt` -- is not trusted. You can choose to add this to your local trust store, or just by pass the certificate check in your browser -- in Chrome, you can click on "Advanced" and then "Proceed to localhost (unsafe)".

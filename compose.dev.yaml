@@ -1,0 +1,88 @@
+name: solidstore
+
+services:
+  client-dev:
+    container_name: solidstore-client-dev
+    develop:
+      watch:
+        - path: ./client
+          target: /app
+          ignore: 
+            - ./client/package.json
+          action: sync
+        - path: ./client/package.json
+          target: /app/package.json
+          action: sync+restart
+
+    build:
+      context: .
+      dockerfile: client/docker/client.dev.Dockerfile
+    networks:
+      solidstore-network-dev:
+        ipv4_address: 192.168.0.2
+    depends_on:
+      server-dev:
+        condition: service_healthy
+      caddy-dev:
+        condition: service_healthy
+
+  server-dev:
+    container_name: solidstore-server-dev
+    develop:
+      watch:
+        - path: ./server
+          target: /app
+          ignore: 
+            - ./server/package.json
+          action: sync
+        - path: ./server/package.json
+          target: /app/package.json
+          action: sync+restart
+    build:
+      context: .
+      dockerfile: server/server.dev.Dockerfile
+    networks:
+      solidstore-network-dev:
+        ipv4_address: 192.168.0.3
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+
+  postgres-dev:
+    container_name: solidstore-db-dev
+    build:
+      dockerfile: Dockerfile
+      context: db
+    volumes:
+      # Persists records
+      - ./db/docker/data:/var/lib/postgresql/data
+    networks:
+      solidstore-network-dev:
+        ipv4_address: 192.168.0.4
+
+  caddy-dev:
+    container_name: solidstore-caddy-dev
+    build:
+      dockerfile: Dockerfile
+      context: caddy
+    volumes:
+      - ./caddy:/etc/caddy
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+    ports:
+      - 5213:5213
+      - 5313:5313
+    networks:
+      solidstore-network-dev:
+        ipv4_address: 192.168.0.5
+
+networks:
+  solidstore-network-dev:
+    name: solidstore-network-dev
+    enable_ipv6: false
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
+          ip_range: 192.168.0.0/24
+          gateway: 192.168.0.1
