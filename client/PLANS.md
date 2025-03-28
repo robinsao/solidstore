@@ -1,0 +1,2 @@
+- Research how to consolidate Dockerfiles. Right now it's kind of messy
+- Implement no-auth-and-no-S3 version, so that it's more accessible. The fact that people have to configure Auth0 and S3 is very unattractive :).
