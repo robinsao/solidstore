@@ -19,7 +19,7 @@ COPY --from=nodedeps /app/public ./public
 COPY client/docker/command.sh .
 
 RUN apt-get update && \
-    apt-get install -y curl ca-certificates
+    apt-get install -y curl
 
 EXPOSE 3000
 
