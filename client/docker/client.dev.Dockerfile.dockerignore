@@ -1,8 +1,0 @@
-*/.next
-client/.vscode
-client/node_modules
-client/*.template
-client/.gitignore
-client/PLANS.md
-server
-db

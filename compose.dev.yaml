@@ -9,14 +9,19 @@ services:
           target: /app
           ignore: 
             - ./client/package.json
+            - ./client/pnpm-lock.yaml
           action: sync
         - path: ./client/package.json
           target: /app/package.json
           action: sync+restart
+        - path: ./client/pnpm-lock.yaml
+          target: /app/pnpm-lock.yaml
+          action: sync+restart
 
     build:
       context: .
-      dockerfile: client/docker/client.dev.Dockerfile
+      dockerfile: client/docker/client.Dockerfile
+      target: devrunner
     networks:
       solidstore-network-dev:
         ipv4_address: 192.168.0.2
@@ -34,13 +39,17 @@ services:
           target: /app
           ignore: 
             - ./server/package.json
+            - ./server/pnpm-lock.yaml
           action: sync
         - path: ./server/package.json
           target: /app/package.json
           action: sync+restart
+        - path: ./server/pnpm-lock.yaml
+          target: /app/pnpm-lock.yaml
+          action: sync+restart
     build:
       context: .
-      dockerfile: server/server.dev.Dockerfile
+      dockerfile: server/server.Dockerfile
     networks:
       solidstore-network-dev:
         ipv4_address: 192.168.0.3
