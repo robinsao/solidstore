@@ -50,9 +50,11 @@ export async function getPath({
 export async function deleteFileOrFolder({
   id,
   userId,
+  s3Client,
 }: {
   id: string;
   userId: string;
+  s3Client: S3Client;
 }) {
   let fileDbRes;
   try {
@@ -70,7 +72,7 @@ export async function deleteFileOrFolder({
   if (fileDbRes === null) throw new Error("Not found");
 
   if (fileDbRes.type === "folder") await deleteFolder(id);
-  else await deleteFile({ userId, fileId: id, s3Client: new S3Client() });
+  else await deleteFile({ userId, fileId: id, s3Client });
 }
 
 export async function isOwner(userId: string, fileId: string) {
