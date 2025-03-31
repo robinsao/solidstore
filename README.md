@@ -56,16 +56,22 @@ Then configure
 
 Next, configure the environment variables for the client app and the server. Follow [this link](https://auth0.com/docs/quickstart/webapp/nextjs/01-login) to configure the client.
 
-To run the app, you can run
-
 ```
+# Run the production-version
 docker compose -d
+
+# Shutdown
+docker compose down
 ```
 
-There's also the development environment where hot reload is enabled. To run the development environment, you can run
+There's also the development environment where hot reload is enabled
 
 ```
+# Start the development version
 docker compose -f compose.dev.yaml up --watch
+
+# Shutdown
+docker compose -f compose.dev.yaml down
 ```
 
 The client should be accessible on `https://localhost:5213` and the server on `https://localhost:5313` regardless if you're running in the normal environment or development environment.
