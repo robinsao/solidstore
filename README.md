@@ -8,12 +8,13 @@ This project uses:
 
 - Next.js for the frontend
 - Express.js for the backend
-- Auth0
+- Auth0 for authentication
 - [Caddy](https://caddyserver.com/) to serve https locally by creating reverse-proxies for the frontend and the backend; integration with Auth0 in Next.js doesn't work properly without HTTPS, so that's why Caddy is used.
 - An S3 bucket to store files.
 - and, PostgreSQL to store files' metadata.
 
 # Install
+Clone the project
 
 ```
 git clone https://github.com/robinsao/solidstore
@@ -56,6 +57,8 @@ Then configure
 
 Next, configure the environment variables for the client app and the server. Follow [this link](https://auth0.com/docs/quickstart/webapp/nextjs/01-login) to configure the client.
 
+You can run the production-version as follows:
+
 ```
 # Run the production-version
 docker compose up -d
@@ -64,7 +67,7 @@ docker compose up -d
 docker compose down
 ```
 
-There's also the development environment where hot reload is enabled
+There's also the development environment where hot reload is enabled:
 
 ```
 # Start the development version
