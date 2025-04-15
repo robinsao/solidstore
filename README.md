@@ -58,7 +58,7 @@ Next, configure the environment variables for the client app and the server. Fol
 
 ```
 # Run the production-version
-docker compose -d
+docker compose up -d
 
 # Shutdown
 docker compose down
