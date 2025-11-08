@@ -29,7 +29,7 @@ router.get(
 );
 
 router.get(
-  "/:folderId?/content",
+  "{/:folderId}/content",
   requiredScopes(process.env.READ_FILES_SCOPE),
   async (req: Request, res: Response, _: NextFunction) => {
     const ownerId = req.user;
@@ -56,7 +56,7 @@ router.get(
 );
 
 router.post(
-  "/:parentFolderId?/:name",
+  "{/:parentFolderId}/:name",
   requiredScopes(process.env.CREATE_FILES_SCOPE),
   async (req: Request, res: Response, _: NextFunction) => {
     const { name } = req.params;

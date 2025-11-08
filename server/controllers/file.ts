@@ -48,7 +48,7 @@ router.get(
 
 // Finishes a file upload
 router.post(
-  "/:parentFolderID?/:fileId/upload-completion",
+  "{/:parentFolderID}/:fileId/upload-completion",
   requiredScopes(process.env.CREATE_FILES_SCOPE),
   async (req, res, _) => {
     const { fileId } = req.params;
@@ -73,7 +73,7 @@ router.post(
 
 // Get file upload presigned url
 router.get(
-  "/:parentFolderID?/:fileName/upload-url",
+  "{/:parentFolderID}/:fileName/upload-url",
   requiredScopes(process.env.CREATE_FILES_SCOPE),
   async (req, res, _) => {
     const { fileName } = req.params;
