@@ -1,0 +1,18 @@
+# Allows access from browers on host machine
+localhost:5213 {
+	# server
+	reverse_proxy host.docker.internal:3000
+}
+
+localhost:5313 {
+	# server
+	reverse_proxy host.docker.internal:3010
+}
+
+# Presents the root certificate
+http://192.168.0.5:2020 {
+	file_server {
+		root /data/caddy/pki/authorities/local
+		hide *.key
+	}
+}

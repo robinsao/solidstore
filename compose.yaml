@@ -35,7 +35,7 @@ services:
       context: db
     volumes:
       # Persists records
-      - ./db/docker/data:/var/lib/postgresql/data
+      - ./db/docker/data:/var/lib/postgresql/18/docker
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.4
@@ -46,9 +46,9 @@ services:
       dockerfile: Dockerfile
       context: caddy
     volumes:
-      - ./caddy:/etc/caddy
-      - ./caddy/data:/data
-      - ./caddy/config:/config
+      - ./caddy/prod:/etc/caddy
+      - ./caddy/prod/data:/data
+      - ./caddy/prod/config:/config
     ports:
       - 5213:5213
       - 5313:5313

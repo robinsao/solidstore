@@ -1,8 +1,4 @@
-FROM caddy
-
-EXPOSE 5213
-EXPOSE 5313
-EXPOSE 2000
+FROM caddy:2.10.2
 
 RUN apk update && \
     apk add --no-cache curl

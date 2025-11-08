@@ -1,62 +1,7 @@
 name: solidstore
 
+# Next.js v16 docs doesn't recommend using compose for development.
 services:
-  client-dev:
-    container_name: solidstore-client-dev
-    develop:
-      watch:
-        - path: ./client
-          target: /app
-          ignore: 
-            - ./client/package.json
-            - ./client/pnpm-lock.yaml
-          action: sync
-        - path: ./client/package.json
-          target: /app/package.json
-          action: sync+restart
-        - path: ./client/pnpm-lock.yaml
-          target: /app/pnpm-lock.yaml
-          action: sync+restart
-
-    build:
-      context: .
-      dockerfile: client/docker/client.Dockerfile
-      target: devrunner
-    networks:
-      solidstore-network-dev:
-        ipv4_address: 192.168.0.2
-    depends_on:
-      server-dev:
-        condition: service_healthy
-      caddy-dev:
-        condition: service_healthy
-
-  server-dev:
-    container_name: solidstore-server-dev
-    develop:
-      watch:
-        - path: ./server
-          target: /app
-          ignore: 
-            - ./server/package.json
-            - ./server/pnpm-lock.yaml
-          action: sync
-        - path: ./server/package.json
-          target: /app/package.json
-          action: sync+restart
-        - path: ./server/pnpm-lock.yaml
-          target: /app/pnpm-lock.yaml
-          action: sync+restart
-    build:
-      context: .
-      dockerfile: server/server.Dockerfile
-    networks:
-      solidstore-network-dev:
-        ipv4_address: 192.168.0.3
-    depends_on:
-      postgres-dev:
-        condition: service_healthy
-
   postgres-dev:
     container_name: solidstore-db-dev
     build:
@@ -64,7 +9,9 @@ services:
       context: db
     volumes:
       # Persists records
-      - ./db/docker/data:/var/lib/postgresql/data
+      - ./db/docker/data:/var/lib/postgresql/18/docker
+    ports:
+      - 5432:5432
     networks:
       solidstore-network-dev:
         ipv4_address: 192.168.0.4
@@ -75,9 +22,9 @@ services:
       dockerfile: Dockerfile
       context: caddy
     volumes:
-      - ./caddy:/etc/caddy
-      - ./caddy/data:/data
-      - ./caddy/config:/config
+      - ./caddy/dev:/etc/caddy
+      - ./caddy/dev/data:/data
+      - ./caddy/dev/config:/config
     ports:
       - 5213:5213
       - 5313:5313

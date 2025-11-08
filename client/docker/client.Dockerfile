@@ -15,12 +15,6 @@ COPY ./client .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 
-FROM nodedeps AS devrunner
-EXPOSE 3000
-
-CMD ["sh", "-c", "curl http://192.168.0.5:2020/root.crt > /app/caddy-root.crt && NODE_EXTRA_CA_CERTS=/app/caddy-root.crt pnpm dev"]
-
-
 FROM nodedeps AS build
 WORKDIR /app
 COPY client/tsconfig.prod.json ./tsconfig.json
