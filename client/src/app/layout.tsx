@@ -2,12 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ruda, saira } from "./fonts";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import { auth0 } from "@/lib/auth0";
-
-const ProfileNoSSR = dynamic(() => import("./(navbar)/Profile"), {
-  ssr: false,
-});
+import Profile from "./(navbar)/Profile";
 
 export const metadata: Metadata = {
   title: "SolidStore - Home",
@@ -48,9 +44,9 @@ export default function RootLayout({
               SolidStore
             </span>
           </div>
-          <ProfileNoSSR>
+          <Profile>
             <ProfilePicture />
-          </ProfileNoSSR>
+          </Profile>
         </nav>
         <hr className="border-green-950 dark:border-green-400" />
         <main id="root" className="h-svh">

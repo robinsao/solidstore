@@ -7,11 +7,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/Popover";
 
-function toggleDarkMode() {
-  const htmlElement = document.getElementById("htmlElement");
-  htmlElement?.classList.toggle("dark");
-}
-
 export default function Profile({ children }: { children: ReactElement<any> }) {
   const [_, setIsOpen] = useState(false);
   return (
@@ -27,11 +22,7 @@ export default function Profile({ children }: { children: ReactElement<any> }) {
       >
         <form className="flex justify-between p-2">
           <label htmlFor="dark-mode-toggle">Dark Mode</label>
-          <input
-            id="dark-mode-toggle"
-            type="checkbox"
-            onChange={toggleDarkMode}
-          />
+          <input id="dark-mode-toggle" type="checkbox" onChange={() => {}} />
         </form>
         <Link
           href={"/settings"}
