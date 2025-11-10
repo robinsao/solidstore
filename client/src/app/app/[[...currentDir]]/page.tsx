@@ -26,24 +26,8 @@ import {
   ContextMenuContent,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { fetchWithAuthFromServer } from "@/helpers/backend-helpers";
 import { auth0 } from "@/lib/auth0";
-
-async function fetchFolderPath(folderId: string) {
-  "use server";
-
-  if (!folderId) return [];
-  const path = await fetchWithAuthFromServer(
-    `${process.env.BACKEND_PB_DOMAIN_NAME}/folders/${folderId}/path`,
-    { method: "GET" }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      console.log(`Error fetching breadcrumbs: ${err}`);
-    });
-
-  return path?.path;
-}
+import { fetchFolderPath } from "@/helpers/server-actions/file";
 
 async function Breadcrumbs({ currDirId }: { currDirId: string }) {
   const path: Array<{ id: string; name: string }> =
