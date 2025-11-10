@@ -43,7 +43,7 @@ function FilesPreview({
     <Popover modal={true} open={isOpen}>
       <PopoverTrigger asChild>
         {/* This span element is here to allow us to programmatically open/close the popover. */}
-        <span className="hidden"></span>
+        <span suppressHydrationWarning></span>
       </PopoverTrigger>
       <PopoverContent className="top-0 left-0 w-dvw h-dvh transform-none p-0">
         <div className="top-0 left-0 w-dvw h-dvh bg-black opacity-75 fixed"></div>

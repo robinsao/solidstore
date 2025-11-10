@@ -2,6 +2,20 @@
 import { fetchWithAuthFromServer } from "@/helpers/backend-helpers";
 import { revalidatePath } from "next/cache";
 
+async function fetchFolderPath(folderId: string) {
+  if (!folderId) return [];
+  const path = await fetchWithAuthFromServer(
+    `${process.env.BACKEND_PB_DOMAIN_NAME}/folders/${folderId}/path`,
+    { method: "GET" }
+  )
+    .then((res) => res.json())
+    .catch((err) => {
+      console.log(`Error fetching breadcrumbs: ${err}`);
+    });
+
+  return path?.path;
+}
+
 async function createFolder(data: FormData) {
   const name = data.get("name");
   const parentFolderID = data.get("parentFolderID");
@@ -162,6 +176,7 @@ async function completeUpload(
 }
 
 export {
+  fetchFolderPath,
   createFolder,
   deleteFileItem,
   getUploadUrlAndId,

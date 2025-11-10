@@ -26,23 +26,28 @@ import {
   ContextMenuContent,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { fetchWithAuthFromServer } from "@/helpers/backend-helpers";
 import { auth0 } from "@/lib/auth0";
+import { fetchFolderPath } from "@/helpers/server-actions/file";
 
-async function fetchFolderPath(folderId: string) {
-  "use server";
-
-  if (!folderId) return [];
-  const path = await fetchWithAuthFromServer(
-    `${process.env.BACKEND_PB_DOMAIN_NAME}/folders/${folderId}/path`,
-    { method: "GET" }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      console.log(`Error fetching breadcrumbs: ${err}`);
-    });
-
-  return path?.path;
+function StyledBreadcrumb({
+  file,
+  idx,
+}: {
+  file: { id: string; name: string };
+  idx: number;
+}) {
+  return (
+    <>
+      {idx !== 0 && <BreadcrumbSeparator key={`breadcrumb-${file.id}`} />}
+      <BreadcrumbItem key={`${file.id}`}>
+        <BreadcrumbLink asChild>
+          <Link href={`/app/${file.id === "home" ? "" : file.id}`}>
+            {file.name}
+          </Link>
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+    </>
+  );
 }
 
 async function Breadcrumbs({ currDirId }: { currDirId: string }) {
@@ -54,16 +59,11 @@ async function Breadcrumbs({ currDirId }: { currDirId: string }) {
     <Breadcrumb>
       <BreadcrumbList>
         {path.map((f, idx: number) => (
-          <>
-            {idx !== 0 && <BreadcrumbSeparator key={`breadcrumb-${f.id}`} />}
-            <BreadcrumbItem key={`${f.id}`}>
-              <BreadcrumbLink asChild>
-                <Link href={`/app/${f.id === "home" ? "" : f.id}`}>
-                  {f.name}
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </>
+          <StyledBreadcrumb
+            file={f}
+            idx={idx}
+            key={`breadcrumb-item-${f.id}`}
+          />
         ))}
       </BreadcrumbList>
     </Breadcrumb>

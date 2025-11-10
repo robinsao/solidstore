@@ -54,7 +54,7 @@ function FileItem({
       <ContextMenuTrigger
         className={cn(
           "h-11 block rounded-xl bg-gray-300 hover:cursor-pointer",
-          className,
+          className
         )}
       >
         <div data-test="file-item" className="h-full flex items-center">
@@ -62,7 +62,7 @@ function FileItem({
           <span className="text-sm">{name}</span>
         </div>
       </ContextMenuTrigger>
-      <ContextMenuContent className="rounded-xl w-48 *:flex *:justify-center *:items-center *:py-2 *:px-2 *:rounded-md [&>*:hover]:bg-gray-300 [&_svg]:text-lg *:cursor-pointer">
+      <ContextMenuContent className="rounded-xl w-48 *:flex *:justify-center *:items-center *:py-2 *:px-2 bg-background *:rounded-md [&>*:hover]:bg-gray-300 [&_svg]:text-lg *:cursor-pointer">
         <DownloadFileBtn fileId={id} fileName={name}>
           <span>Download</span>
           <ContextMenuShortcut>
@@ -166,7 +166,7 @@ function DeleteFileBtn({
   fileName: string;
 }) {
   const { setIsPopoverOpen, setFileItemToDelete } = useContext(
-    FileItemToDeleteContext,
+    FileItemToDeleteContext
   ) || {
     setPopoverOpen: null,
     setFileItemToDelete: null,
