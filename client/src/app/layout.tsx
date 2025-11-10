@@ -15,7 +15,7 @@ async function ProfilePicture() {
 
   return (
     <Image
-      src={session?.user.picture || ""}
+      src={session?.user.picture || "/profile.png"}
       width={36}
       height={36}
       alt="profile photo"
