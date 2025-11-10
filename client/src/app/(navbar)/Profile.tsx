@@ -12,7 +12,7 @@ function toggleDarkMode() {
   htmlElement?.classList.toggle("dark");
 }
 
-export default function Profile({ children }: { children: ReactElement }) {
+export default function Profile({ children }: { children: ReactElement<any> }) {
   const [_, setIsOpen] = useState(false);
   return (
     <Popover>
@@ -23,7 +23,7 @@ export default function Profile({ children }: { children: ReactElement }) {
       </PopoverTrigger>
       <PopoverContent
         className="w-48 bg-white shadow-md
-        border-gray-300 border-[1px] rounded-xl dark:bg-gray-800 dark:text-gray-100"
+        border-gray-300 border rounded-xl dark:bg-gray-800 dark:text-gray-100"
       >
         <form className="flex justify-between p-2">
           <label htmlFor="dark-mode-toggle">Dark Mode</label>
@@ -39,9 +39,9 @@ export default function Profile({ children }: { children: ReactElement }) {
         >
           Settings
         </Link>
-        <hr className="border-[1px] border-l-gray-300" />
+        <hr className="border border-l-gray-300" />
         <Link
-          href={`/api/auth/logout`}
+          href={`/auth/logout`}
           className="visited:text-red-600 text-red-600 px-2 py-2 hover:bg-gray-100 block dark:hover:bg-gray-600"
           data-test="logout-btn"
         >

@@ -77,7 +77,7 @@ function CreateFolderForm({
   children,
   parentFolderID,
 }: {
-  children: ReactElement | ReactElement[];
+  children: ReactElement<any> | ReactElement<any>[];
   parentFolderID: string;
 }) {
   const { setIsCreateFolderPopoverOpen } = useContext(PageStateContext) || {

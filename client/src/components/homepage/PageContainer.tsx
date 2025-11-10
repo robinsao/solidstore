@@ -9,7 +9,7 @@ export function PageContainer({
   children,
   dir,
 }: {
-  children: ReactElement | ReactElement[];
+  children: ReactElement<any> | ReactElement<any>[];
   dir: string;
 }) {
   const [files, setFiles] = useState(

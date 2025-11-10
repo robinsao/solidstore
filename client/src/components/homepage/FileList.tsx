@@ -62,7 +62,7 @@ function FileItem({
           <span className="text-sm">{name}</span>
         </div>
       </ContextMenuTrigger>
-      <ContextMenuContent className="rounded-xl w-48 [&>*]:flex [&>*]:justify-center [&>*]:items-center [&>*]:py-2 [&>*]:px-2 [&>*]:rounded-md [&>*:hover]:bg-gray-300 [&_svg]:text-lg [&>*]:cursor-pointer">
+      <ContextMenuContent className="rounded-xl w-48 *:flex *:justify-center *:items-center *:py-2 *:px-2 *:rounded-md [&>*:hover]:bg-gray-300 [&_svg]:text-lg *:cursor-pointer">
         <DownloadFileBtn fileId={id} fileName={name}>
           <span>Download</span>
           <ContextMenuShortcut>
@@ -97,7 +97,7 @@ function DownloadFileBtn({
   fileId,
   fileName,
 }: {
-  children: ReactElement[] | ReactElement;
+  children: ReactElement<any>[] | ReactElement<any>;
   fileId: string;
   fileName: string;
 }) {
@@ -139,7 +139,7 @@ function MoveFileBtn({
   children,
 }: {
   fileId: string;
-  children: ReactElement[] | ReactElement;
+  children: ReactElement<any>[] | ReactElement<any>;
 }) {
   return <ContextMenuItem>{children}</ContextMenuItem>;
 }
@@ -149,7 +149,7 @@ function FileInfoBtn({
   children,
 }: {
   fileId: string;
-  children: ReactElement[] | ReactElement;
+  children: ReactElement<any>[] | ReactElement<any>;
 }) {
   return <ContextMenuItem>{children}</ContextMenuItem>;
 }
@@ -160,7 +160,7 @@ function DeleteFileBtn({
   fileId,
   fileName,
 }: {
-  children: ReactElement[] | ReactElement;
+  children: ReactElement<any>[] | ReactElement<any>;
   className: string;
   fileId: string;
   fileName: string;

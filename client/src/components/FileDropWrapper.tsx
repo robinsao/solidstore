@@ -5,7 +5,7 @@ import { ReactElement } from "react";
 export default function FileDropWrapper({
   children,
 }: {
-  children: ReactElement | ReactElement[];
+  children: ReactElement<any> | ReactElement<any>[];
 }) {
   return (
     <div

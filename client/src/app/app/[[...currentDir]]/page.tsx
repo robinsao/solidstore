@@ -3,8 +3,6 @@ import { redirect } from "next/navigation";
 
 import { Suspense } from "react";
 
-import { getSession } from "@auth0/nextjs-auth0";
-
 import FileSearch from "@/components/SearchFile";
 import {
   CreateNewFolderBtn,
@@ -29,6 +27,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { fetchWithAuthFromServer } from "@/helpers/backend-helpers";
+import { auth0 } from "@/lib/auth0";
 
 async function fetchFolderPath(folderId: string) {
   "use server";
@@ -36,7 +35,7 @@ async function fetchFolderPath(folderId: string) {
   if (!folderId) return [];
   const path = await fetchWithAuthFromServer(
     `${process.env.BACKEND_PB_DOMAIN_NAME}/folders/${folderId}/path`,
-    { method: "GET" },
+    { method: "GET" }
   )
     .then((res) => res.json())
     .catch((err) => {
@@ -71,20 +70,14 @@ async function Breadcrumbs({ currDirId }: { currDirId: string }) {
   );
 }
 
-export default async function Page({
-  params,
-}: {
-  params: {
+export default async function Page(props: {
+  params: Promise<{
     currentDir: string[];
-  };
+  }>;
 }) {
-  const session = await getSession();
-  if (
-    !session ||
-    !session.accessTokenExpiresAt ||
-    Date.now() / 1000 - session.accessTokenExpiresAt > 0
-  )
-    redirect("/api/auth/login");
+  const params = await props.params;
+  const session = await auth0.getSession();
+  if (!session) redirect("/auth/login");
 
   const dir = params.currentDir ? params.currentDir[0] : "";
 
