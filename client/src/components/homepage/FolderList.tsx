@@ -61,7 +61,7 @@ function FolderItem({
           <span className="text-sm">{name}</span>
         </Link>
       </ContextMenuTrigger>
-      <ContextMenuContent className="rounded-xl w-48 *:flex *:justify-center *:items-center *:py-2 *:px-2 *:rounded-md [&>*:hover]:bg-gray-300 [&_svg]:text-lg *:cursor-pointer">
+      <ContextMenuContent className="rounded-xl w-48 *:flex *:justify-center *:items-center *:py-2 *:px-2 bg-background *:rounded-md [&>*:hover]:bg-gray-300 [&_svg]:text-lg *:cursor-pointer">
         <MoveFolderBtn folderId={id}>
           <span>Move</span>
           <ContextMenuShortcut>
@@ -101,7 +101,7 @@ function DeleteFolderBtn({
   folderName: string;
 }) {
   const { setIsPopoverOpen, setFileItemToDelete } = useContext(
-    FileItemToDeleteContext
+    FileItemToDeleteContext,
   ) || {
     setPopoverOpen: null,
     setFileItemToDelete: null,
