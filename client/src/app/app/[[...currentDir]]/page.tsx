@@ -29,6 +29,27 @@ import {
 import { auth0 } from "@/lib/auth0";
 import { fetchFolderPath } from "@/helpers/server-actions/file";
 
+function StyledBreadcrumb({
+  file,
+  idx,
+}: {
+  file: { id: string; name: string };
+  idx: number;
+}) {
+  return (
+    <>
+      {idx !== 0 && <BreadcrumbSeparator key={`breadcrumb-${file.id}`} />}
+      <BreadcrumbItem key={`${file.id}`}>
+        <BreadcrumbLink asChild>
+          <Link href={`/app/${file.id === "home" ? "" : file.id}`}>
+            {file.name}
+          </Link>
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+    </>
+  );
+}
+
 async function Breadcrumbs({ currDirId }: { currDirId: string }) {
   const path: Array<{ id: string; name: string }> =
     await fetchFolderPath(currDirId);
@@ -38,16 +59,11 @@ async function Breadcrumbs({ currDirId }: { currDirId: string }) {
     <Breadcrumb>
       <BreadcrumbList>
         {path.map((f, idx: number) => (
-          <>
-            {idx !== 0 && <BreadcrumbSeparator key={`breadcrumb-${f.id}`} />}
-            <BreadcrumbItem key={`${f.id}`}>
-              <BreadcrumbLink asChild>
-                <Link href={`/app/${f.id === "home" ? "" : f.id}`}>
-                  {f.name}
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </>
+          <StyledBreadcrumb
+            file={f}
+            idx={idx}
+            key={`breadcrumb-item-${f.id}`}
+          />
         ))}
       </BreadcrumbList>
     </Breadcrumb>
