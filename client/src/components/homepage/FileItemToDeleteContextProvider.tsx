@@ -25,7 +25,7 @@ export function FileItemToDeleteContextProvider({
       {children}
       <Popover open={isPopoverOpen}>
         <PopoverTrigger asChild>
-          <span suppressHydrationWarning></span>
+          <span suppressHydrationWarning className="hidden"></span>
         </PopoverTrigger>
         <DeleteFileItemPopoverContent />
       </Popover>

@@ -21,7 +21,7 @@ function CreateNewFolderPopover({
   return (
     <Popover open={isOpen}>
       <PopoverTrigger asChild>
-        <a className="hidden">a</a>
+        <span suppressHydrationWarning className="hidden"></span>
       </PopoverTrigger>
       <PopoverContent className="top-0 left-0 w-dvw h-dvh transform-none p-0 flex items-center justify-center">
         <div className="top-0 left-0 w-dvw h-dvh bg-black opacity-75 fixed"></div>

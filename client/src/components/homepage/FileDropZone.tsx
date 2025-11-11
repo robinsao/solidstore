@@ -127,7 +127,7 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
       {children}
       <Popover open={isPopoveropen}>
         <PopoverTrigger asChild>
-          <button className="hidden">a</button>
+          <span suppressHydrationWarning className="hidden"></span>
         </PopoverTrigger>
         <PopoverContent className="top-0 left-0 w-dvw h-dvh transform-none​ p-0">
           <div className="bg-black opacity-75 w-full h-full fixed"></div>
