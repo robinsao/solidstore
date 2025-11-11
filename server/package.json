@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test-db": "dotenvx run -f .env -- ts-node db.ts",
-    "dev": "dotenvx run -f .env -- ts-node run-app.ts",
+    "dev": "dotenvx run -f .env -- typeorm-ts-node-commonjs migration:run -d ./db-data-source.ts && dotenvx run -f .env -- ts-node run-app.ts",
     "test": "dotenvx run -f .env -- mocha",
     "typeorm": "dotenvx run -f .env -- typeorm-ts-node-commonjs",
     "lint": "eslint ./**",
