@@ -19,6 +19,9 @@ FROM nodedeps AS build
 WORKDIR /app
 COPY client/tsconfig.prod.json ./tsconfig.json
 RUN mkdir .next
+
+RUN if [ -f .env.docker ]; then cp .env.docker .env; fi
+
 RUN pnpm build
 
 

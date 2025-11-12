@@ -54,6 +54,8 @@ Then configure
 
 Next, configure the environment variables for the client app and the server. Follow [this link](https://auth0.com/docs/quickstart/webapp/nextjs) to configure the client.
 
+`.env.docker` files are also supported.
+
 When referencing docker containers, you can use `http://container-name:PORT`, but it's recommended to use their static IP addresses as seen in the env template files. This is because there are multiple compose files in this project, each of which uses different container names but use the same IP subnet range.
 
 # Run

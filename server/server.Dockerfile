@@ -5,9 +5,11 @@ RUN corepack enable
 WORKDIR /app
 COPY ./server/package.json .
 COPY ./server/pnpm-lock.yaml .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 COPY server .
+
+RUN if [ -f .env.docker ]; then cp .env.docker .env; fi
 
 EXPOSE 3010
 
