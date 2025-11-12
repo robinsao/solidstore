@@ -35,9 +35,18 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
       server:
         specifier: 'file:'
-        version: 'file:'
+        version: file:(@types/node@22.19.0)(reflect-metadata@0.2.2)(typescript@5.5.4)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@22.19.0)(typescript@5.5.4)
+      typeorm:
+        specifier: ^0.3.27
+        version: 0.3.27(pg@8.16.3)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.5.4))
     devDependencies:
       '@babel/core':
         specifier: ^7.28.5
@@ -75,24 +84,15 @@ importers:
       mocha:
         specifier: ^11.7.5
         version: 11.7.5
-      pg:
-        specifier: ^8.16.3
-        version: 8.16.3
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
       should:
         specifier: ^13.2.3
         version: 13.2.3
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.19.0)(typescript@5.5.4)
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@22.19.0)(typescript@5.5.4)
-      typeorm:
-        specifier: ^0.3.27
-        version: 0.3.27(pg@8.16.3)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.5.4))
       typescript-eslint:
         specifier: ^8.46.3
         version: 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.5.4)
@@ -5762,7 +5762,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  'server@file:':
+  server@file:(@types/node@22.19.0)(reflect-metadata@0.2.2)(typescript@5.5.4):
     dependencies:
       '@aws-sdk/client-s3': 3.927.0
       '@aws-sdk/s3-request-presigner': 3.927.0
@@ -5773,10 +5773,33 @@ snapshots:
       express-oauth2-jwt-bearer: 1.7.1
       http-status-codes: 2.3.0
       jsonwebtoken: 9.0.2
+      pg: 8.16.3
+      ts-node: 10.9.2(@types/node@22.19.0)(typescript@5.5.4)
+      typeorm: 0.3.27(pg@8.16.3)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@22.19.0)(typescript@5.5.4))
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - '@swc/core'
+      - '@swc/wasm'
+      - '@types/node'
       - aws-crt
+      - babel-plugin-macros
+      - better-sqlite3
       - debug
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg-native
+      - pg-query-stream
+      - redis
+      - reflect-metadata
+      - sql.js
+      - sqlite3
       - supports-color
+      - typeorm-aurora-data-api-driver
+      - typescript
 
   set-function-length@1.2.2:
     dependencies:
