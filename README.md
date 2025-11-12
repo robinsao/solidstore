@@ -14,6 +14,7 @@ This project uses:
 - and, PostgreSQL to store files' metadata.
 
 # Install
+
 Clone the project
 
 ```
@@ -24,13 +25,9 @@ Then configure
 
 - Auth0:
 
-  - Create a machine-to-machine client. Add `https://localhost:5213, https://localhost:5213/api/auth/callback, http://localhost:3000/api/auth/callback, http://localhost:3000/` to allowed callback URLs,
+  - Create a regular web app (RWA) client. Add `https://localhost:5213, https://localhost:5213/api/auth/callback, http://localhost:3000/api/auth/callback, http://localhost:3000/` to allowed callback URLs, and `https://localhost:5213, https://{YOUR_AUTH0_BASE_ISSUER_URL}/v2/logout` to allowed logout URLs.
 
-    and `https://localhost:5213, https://{YOUR_AUTH0_BASE_ISSUER_URL}/v2/logout` to allowed logout URLs.
-
-    Then, follow this [link](https://auth0.com/docs/get-started/authentication-and-authorization-flow/resource-owner-password-flow/call-your-api-using-resource-owner-password-flow) to setup a authentication flow.
-
-  - Create an API. Configure your scopes/permissions for create, read, delete files. Next, authorize the client to request access tokens.
+  - Create an API. Configure your scopes/permissions for create, read, delete files. Next, authorize the client to request access tokens from the API.
 
 - S3: Add the following CORS policy:
 
@@ -47,7 +44,7 @@ Then configure
               "GET"
           ],
           "AllowedOrigins": [
-              "*"
+            "https://localhost:5213", "http://localhost:3000"
           ],
           "ExposeHeaders": [],
           "MaxAgeSeconds": 3000
@@ -55,7 +52,11 @@ Then configure
   ]
   ```
 
-Next, configure the environment variables for the client app and the server. Follow [this link](https://auth0.com/docs/quickstart/webapp/nextjs/01-login) to configure the client.
+Next, configure the environment variables for the client app and the server. Follow [this link](https://auth0.com/docs/quickstart/webapp/nextjs) to configure the client.
+
+When referencing docker containers, you can use `http://container-name:PORT`, but it's recommended to use their static IP addresses as seen in the env template files. This is because there are multiple compose files in this project, each of which uses different container names but use the same IP subnet range.
+
+# Run
 
 You can run the production-version as follows:
 
@@ -67,7 +68,7 @@ docker compose up -d
 docker compose down
 ```
 
-There's also the development environment where hot reload is enabled:
+There's also the development environment:
 
 ```
 # Start the development version
@@ -75,7 +76,13 @@ docker compose -f compose.dev.yaml up --watch
 
 # Shutdown
 docker compose -f compose.dev.yaml down
+
+# Then run your frontend and backend separately on your host machine
 ```
+
+**_Note: Always stop `compose` with Ctrl+C once for graceful shutdowns instead of pressing Ctrl+C multiple times_**
+
+The dev environment doesn't run the frontend and backend as containers. Next.js v16 doesn't recommend that. Express.js could run as a container with hot reloading; however, on Windows, I've tested different hot reload packages like nodemon, ts-node-dev, etc. and they seem to have problems emulating Unix process signals (SIGTERM, SIGINT, SIGKILL, etc). So, for now, hot reloading isn't available in the backend; it's run with plain `ts-node`.
 
 The client should be accessible on `https://localhost:5213` and the server on `https://localhost:5313` regardless if you're running in the normal environment or development environment.
 
