@@ -5,3 +5,5 @@
 **/*.code-workspace
 PLAN.md
 **/*.vscode
+localstack-vol
+localstack-prod-vol

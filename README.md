@@ -11,6 +11,7 @@ This project uses:
 - Auth0 for authentication
 - [Caddy](https://caddyserver.com/) to serve https locally by creating reverse-proxies for the frontend and the backend; integration with Auth0 in Next.js doesn't work properly without HTTPS, so that's why Caddy is used.
 - An S3 bucket to store files.
+- Opt-in to use `localstack` to emulate AWS
 - and, PostgreSQL to store files' metadata.
 
 # Install
@@ -29,7 +30,7 @@ Then configure
 
   - Create an API. Configure your scopes/permissions for create, read, delete files. Next, authorize the client to request access tokens from the API.
 
-- S3: Add the following CORS policy:
+- S3: Add the following CORS policy. If you use `localstack`, just skill this.
 
   ```
   [
@@ -60,6 +61,10 @@ When referencing docker containers, you can use `http://container-name:PORT`, bu
 
 # Run
 
+Prerequisites:
+
+- Make sure that you don't have a proxy configured in your browser. This means things like VPNs as browser extensions.
+
 You can run the production-version as follows:
 
 ```
@@ -85,6 +90,27 @@ docker compose -f compose.dev.yaml down
 **_Note: Always stop `compose` with Ctrl+C once for graceful shutdowns instead of pressing Ctrl+C multiple times_**
 
 The dev environment doesn't run the frontend and backend as containers. Next.js v16 doesn't recommend that. Express.js could run as a container with hot reloading; however, on Windows, I've tested different hot reload packages like nodemon, ts-node-dev, etc. and they seem to have problems emulating Unix process signals (SIGTERM, SIGINT, SIGKILL, etc). So, for now, hot reloading isn't available in the backend; it's run with plain `ts-node`.
+
+If you're using `localstack`, run
+
+```
+# Note: by default, there is no persistence. That means if you "docker compose down", all data is lost.
+# This is because the free version of localstack doesn't support persistence.
+# However, if you have a pro version and want persistence, you just need to edit the compose.*.yaml file and follow the instructions there
+# Then come back and run the below commands
+
+# use the "compose.zero-int.yaml" file to run the production version
+docker compose -f compose.zero-int.dev.yaml up --watch
+
+# Shutdown with
+docker compose -f compose.zero-int.dev.yaml down
+
+# Then run your frontend and backend separately on your host machine
+```
+
+It's a bummer `localstack` community version doesn't support persistence. There are docker images such as [this one](https://github.com/GREsau/localstack-persist) that attempts to solve this problem, but it's built by the community making it risky.
+
+# View and interact
 
 The client should be accessible on `https://localhost:5213` and the server on `https://localhost:5313` regardless if you're running in the normal environment or development environment.
 
