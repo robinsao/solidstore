@@ -9,6 +9,11 @@ localhost:5313 {
 	reverse_proxy host.docker.internal:3010
 }
 
+localhost:8443 {
+	# server
+	reverse_proxy keycloak-dev:8080
+}
+
 # Presents the root certificate
 http://192.168.0.5:2020 {
 	file_server {

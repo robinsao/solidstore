@@ -1,7 +1,6 @@
 # If you're a localstack pro user, you can opt-in for persistence by
 # 1. setting up your credentials in the localstack conservicetainer below
 # 2. uncomment the "volumes" sequence in postgres-dev service below
-
 name: solidstore
 
 # Next.js v16 docs doesn't recommend using compose for development.
@@ -35,6 +34,7 @@ services:
     ports:
       - 5213:5213
       - 5313:5313
+      - 8443:8443
     networks:
       solidstore-network-dev:
         ipv4_address: 192.168.0.5
@@ -62,6 +62,60 @@ services:
       - "./localstack-setup.sh:/etc/localstack/init/ready.d/localstack-setup.sh"
     healthcheck:
       test: ["CMD-SHELL", "awslocal s3 ls"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  keycloak-dev:
+    container_name: keycloak-dev
+    restart: always
+    build:
+      context: .
+      dockerfile: keycloak.Dockerfile
+    volumes:
+      - ./keycloak-data-dir:/opt/keycloak/data/
+      - ./keycloak-realms/tenant-of-solidstore.json:/opt/keycloak/data/import/tenant-of-solidstore.json
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_USER:-admin}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD:-admin}
+      - KC_DB_URL=jdbc:postgresql://${KEYCLOAK_DB_HOST:-keycloak-db-dev}:5432/keycloak
+      - KC_DB=postgres
+      - KC_DB_USERNAME=${POSTGRES_USER:-postgres}
+      - KC_DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - KC_HEALTH_ENABLED=true
+    depends_on:
+      keycloak-db-dev:
+        condition: service_healthy
+    networks:
+      solidstore-network-dev:
+        ipv4_address: 192.168.0.6
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -fsSL http://127.0.0.1:9000/health/ready || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  keycloak-db-dev:
+    container_name: keycloak-db-dev
+    image: postgres:18.0
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./keycloak-db:/var/lib/postgresql/18/docker
+    networks:
+      solidstore-network-dev:
+        ipv4_address: 192.168.0.7
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -q -U postgres -d keycloak && exit 0 || exit 1",
+        ]
       interval: 10s
       timeout: 10s
       retries: 5

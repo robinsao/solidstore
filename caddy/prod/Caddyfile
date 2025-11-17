@@ -1,17 +1,32 @@
-192.168.0.5:5213 {
-	# client
-	reverse_proxy 192.168.0.2:3000
+{
+	local_certs
+	pki {
+		ca local {
+      # this is explicit because caddy's default is 7d
+			intermediate_lifetime 730d
+		}
+	}
 }
 
-# Allows access from browers on host machine
-localhost:5213 {
-	# server
-	reverse_proxy 192.168.0.2:3000
+*.solidstore.localhost {
+	tls {
+		issuer internal {
+      # this is explicit because caddy's default is 12h
+			lifetime 365d
+		}
+	}
 }
 
-192.168.0.5:5313 {
-	# server
-	reverse_proxy 192.168.0.3:3010
+https://client.solidstore.localhost {
+	reverse_proxy client:3000
+}
+
+https://server.solidstore.localhost {
+	reverse_proxy server:3010
+}
+
+https://keycloak.solidstore.localhost {
+	reverse_proxy keycloak:8080
 }
 
 # Presents the root certificate

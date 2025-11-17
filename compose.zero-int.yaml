@@ -10,12 +10,17 @@ services:
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.2
+    extra_hosts:
+      - "server.solidstore.localhost:host-gateway"
+      - "keycloak.solidstore.localhost:host-gateway"
     depends_on:
       server:
         condition: service_healthy
       caddy:
         condition: service_healthy
       localstack:
+        condition: service_healthy
+      keycloak:
         condition: service_healthy
 
   server:
@@ -26,6 +31,8 @@ services:
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.3
+    extra_hosts:
+      - "keycloak.solidstore.localhost:host-gateway"
     depends_on:
       postgres:
         condition: service_healthy
@@ -62,9 +69,9 @@ services:
       - AWS_ENDPOINT_URL=https://localhost.localstack.cloud:4566
     volumes:
       # Persist data. You don't need to but you can remove this line if you don't have localstack pro
-      - "${LOCALSTACK_VOLUME_DIR:-./localstack-vol}:/var/lib/localstack"
+      - "${LOCALSTACK_VOLUME_DIR:-./localstack-prod-vol}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./localstack-setup.sh:/etc/localstack/init/ready.d/localstack-setup.sh"
+      - "./localstack-prod-setup.sh:/etc/localstack/init/ready.d/localstack-setup.sh"
     healthcheck:
       test: ["CMD-SHELL", "awslocal s3 ls"]
       interval: 10s
@@ -81,11 +88,67 @@ services:
       - ./caddy/prod/data:/data
       - ./caddy/prod/config:/config
     ports:
-      - 5213:5213
-      - 5313:5313
+      - 443:443
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.5
+
+  keycloak:
+    container_name: keycloak
+    restart: always
+    build:
+      context: .
+      dockerfile: keycloak.Dockerfile
+    volumes:
+      - ./keycloak-prod-data-dir:/opt/keycloak/data/
+      - ./keycloak-realms/tenant-of-solidstore-prod.json:/opt/keycloak/data/import/tenant-of-solidstore.json
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_USER:-admin}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD:-admin}
+      - KC_DB_URL=jdbc:postgresql://${KEYCLOAK_DB_HOST:-keycloak-db}:5432/keycloak
+      - KC_DB=postgres
+      - KC_DB_USERNAME=${POSTGRES_USER:-postgres}
+      - KC_DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - KC_HEALTH_ENABLED=true
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.6
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --head -fsS http://127.0.0.1:9000/health/ready || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  keycloak-db:
+    container_name: keycloak-db
+    image: postgres:18.0
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./keycloak-prod-db:/var/lib/postgresql/18/docker
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.7
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -q -U postgres -d keycloak && exit 0 || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
 networks:
   solidstore-network:

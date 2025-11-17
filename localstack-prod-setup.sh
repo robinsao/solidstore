@@ -6,8 +6,8 @@
 
 # Note: as of localstack v4.10.0, persistence is only for pro users.
 
-export FRONTEND_URL=${FRONTEND_URL:-https://localhost:5213}
-export BACKEND_URL=${BACKEND_URL:-https://localhost:5313}
+export FRONTEND_URL=${FRONTEND_URL:-https://client.solidstore.localhost}
+export BACKEND_URL=${BACKEND_URL:-https://server.solidstore.localhost}
 export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-test}
 export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-test}
 export BUCKET_REGION=${BUCKET_REGION:-ap-southeast-2}
