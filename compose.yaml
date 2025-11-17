@@ -10,6 +10,8 @@ services:
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.2
+    extra_hosts:
+      - "server.solidstore.localhost:host-gateway"
     depends_on:
       server:
         condition: service_healthy
@@ -50,8 +52,7 @@ services:
       - ./caddy/prod/data:/data
       - ./caddy/prod/config:/config
     ports:
-      - 5213:5213
-      - 5313:5313
+      - 443:443
     networks:
       solidstore-network:
         ipv4_address: 192.168.0.5

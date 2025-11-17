@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ruda, saira } from "./fonts";
 import Image from "next/image";
-import { auth0 } from "@/lib/auth0";
 import Profile from "./(navbar)/Profile";
+import { auth } from "./auth";
 
 export const metadata: Metadata = {
   title: "SolidStore - Home",
@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 };
 
 async function ProfilePicture() {
-  const session = await auth0.getSession();
+  const session = await auth();
 
   return (
     <Image
-      src={session?.user.picture || "/profile.png"}
+      src={session?.user?.image || "/profile.png"}
       width={36}
       height={36}
       alt="profile photo"

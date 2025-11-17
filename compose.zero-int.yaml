@@ -1,0 +1,162 @@
+name: solidstore
+
+services:
+  client:
+    container_name: solidstore-client
+    build:
+      context: .
+      dockerfile: client/docker/client.Dockerfile
+      target: prodrunner
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.2
+    extra_hosts:
+      - "server.solidstore.localhost:host-gateway"
+      - "keycloak.solidstore.localhost:host-gateway"
+    depends_on:
+      server:
+        condition: service_healthy
+      caddy:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+  server:
+    container_name: solidstore-server
+    build:
+      context: .
+      dockerfile: server/server.Dockerfile
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.3
+    extra_hosts:
+      - "keycloak.solidstore.localhost:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: solidstore-db
+    build:
+      dockerfile: Dockerfile
+      context: db
+    volumes:
+      # Doesn't persist records. Use this if have localstack doesn't persist data
+      - /var/lib/postgresql/18/docker
+    # Persists records. You can use this if localstack persists data
+    # - ./db/docker/data:/var/lib/postgresql/18/docker
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.4
+
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    # If you need persistence, you need a pro version and use theh localstack-pro image
+    image: localstack/localstack:4.10.0
+    ports:
+      - "127.0.0.1:4566:4566" # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559" # external services port range
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      # If you need persistence, you need a pro version and set your auth token with LOCALSTACK_AUTH_TOKEN
+      - DEBUG=${DEBUG:-1}
+      - PERSISTENCE=${PERSISTENCE:-1}
+      - SNAPSHOT_SAVE_STRATEGY=ON_SHUTDOWN
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_ENDPOINT_URL=https://localhost.localstack.cloud:4566
+    volumes:
+      # Persist data. You don't need to but you can remove this line if you don't have localstack pro
+      - "${LOCALSTACK_VOLUME_DIR:-./localstack-prod-vol}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./localstack-prod-setup.sh:/etc/localstack/init/ready.d/localstack-setup.sh"
+    healthcheck:
+      test: ["CMD-SHELL", "awslocal s3 ls"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  caddy:
+    container_name: solidstore-caddy
+    build:
+      dockerfile: Dockerfile
+      context: caddy
+    volumes:
+      - ./caddy/prod:/etc/caddy
+      - ./caddy/prod/data:/data
+      - ./caddy/prod/config:/config
+    ports:
+      - 443:443
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.5
+
+  keycloak:
+    container_name: keycloak
+    restart: always
+    build:
+      context: .
+      dockerfile: keycloak.Dockerfile
+    volumes:
+      - ./keycloak-prod-data-dir:/opt/keycloak/data/
+      - ./keycloak-realms/tenant-of-solidstore-prod.json:/opt/keycloak/data/import/tenant-of-solidstore.json
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_USER:-admin}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD:-admin}
+      - KC_DB_URL=jdbc:postgresql://${KEYCLOAK_DB_HOST:-keycloak-db}:5432/keycloak
+      - KC_DB=postgres
+      - KC_DB_USERNAME=${POSTGRES_USER:-postgres}
+      - KC_DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - KC_HEALTH_ENABLED=true
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.6
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --head -fsS http://127.0.0.1:9000/health/ready || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  keycloak-db:
+    container_name: keycloak-db
+    image: postgres:18.0
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./keycloak-prod-db:/var/lib/postgresql/18/docker
+    networks:
+      solidstore-network:
+        ipv4_address: 192.168.0.7
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -q -U postgres -d keycloak && exit 0 || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+networks:
+  solidstore-network:
+    name: solidstore-network
+    enable_ipv6: false
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
+          ip_range: 192.168.0.0/24
+          gateway: 192.168.0.1

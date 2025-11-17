@@ -1,0 +1,5 @@
+server/
+.next/
+client/
+db/
+localstack-vol/

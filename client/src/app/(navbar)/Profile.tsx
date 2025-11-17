@@ -32,7 +32,7 @@ export default function Profile({ children }: { children: ReactElement<any> }) {
         </Link>
         <hr className="border border-l-gray-300" />
         <Link
-          href={`/auth/logout`}
+          href={`/api/auth/signout`}
           className="visited:text-red-600 text-red-600 px-2 py-2 hover:bg-gray-100 block dark:hover:bg-gray-600"
           data-test="logout-btn"
         >

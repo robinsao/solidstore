@@ -26,8 +26,8 @@ import {
   ContextMenuContent,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { auth0 } from "@/lib/auth0";
 import { fetchFolderPath } from "@/helpers/server-actions/file";
+import { auth } from "@/app/auth";
 
 function StyledBreadcrumb({
   file,
@@ -76,8 +76,8 @@ export default async function Page(props: {
   }>;
 }) {
   const params = await props.params;
-  const session = await auth0.getSession();
-  if (!session) redirect("/auth/login");
+  const session = await auth();
+  if (!session?.user) redirect("/api/auth/signin");
 
   const dir = params.currentDir ? params.currentDir[0] : "";
 

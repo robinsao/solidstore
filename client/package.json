@@ -10,7 +10,6 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^4.12.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-context-menu": "^2.2.16",
@@ -23,6 +22,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.553.0",
     "next": "16.0.1",
+    "next-auth": "5.0.0-beta.30",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",

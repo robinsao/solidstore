@@ -9,9 +9,15 @@ import cors from "cors";
 const app = express();
 
 const verifyAccessToken = auth({
-  audience: process.env.AUTH0_API_ID,
-  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
+  audience: process.env.API_ID!,
+  issuerBaseURL: process.env.ISSUER_URL!,
   tokenSigningAlg: "RS256",
+  // keycloak requires jwksUri is weird, so it needs to be set explicitly
+  ...(process.env.AUTH_STRATEGY.toLowerCase() === "keycloak"
+    ? {
+        jwksUri: `${process.env.ISSUER_URL}/protocol/openid-connect/certs`,
+      }
+    : {}),
 });
 
 app.use(cors({}));

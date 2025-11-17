@@ -5,3 +5,9 @@
 **/*.code-workspace
 PLAN.md
 **/*.vscode
+localstack-vol
+localstack-prod-vol
+keycloak-data-dir
+keycloak-db
+keycloak-prod-data-dir
+keycloak-prod-db
