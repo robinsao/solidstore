@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test-db": "dotenvx run -f .env -- ts-node db.ts",
-    "dev": "dotenvx run -f .env -- typeorm-ts-node-commonjs migration:run -d ./db-data-source.ts && dotenvx run -f .env -- ts-node run-app.ts",
+    "try-migrate": "dotenvx run -f .env -- typeorm-ts-node-commonjs migration:run -d ./db-data-source.ts",
+    "dev": "pnpm run try-migrate && dotenvx run -f .env -- ts-node run-app.ts",
     "test": "dotenvx run -f .env -- mocha",
     "typeorm": "dotenvx run -f .env -- typeorm-ts-node-commonjs",
     "lint": "eslint ./**",
-    "docker-run": "dotenvx run -f .env -- typeorm-ts-node-commonjs migration:run -d ./db-data-source.ts && dotenvx run -f .env -- ts-node run-app.ts",
+    "docker-run": "pnpm run try-migrate && dotenvx run -f .env -- ts-node run-app.ts",
     "prettier": "prettier --write ."
   },
   "keywords": [],
