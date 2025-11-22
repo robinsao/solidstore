@@ -92,7 +92,7 @@ When referencing docker containers, you can use `http://container-name:PORT`, bu
 
 ## Use LocalStack and Keycloak
 
-Configure
+Configure the environment variables, and that's it!
 
 # Run
 
@@ -150,6 +150,8 @@ pnpm dev
 
 It's a bummer `localstack` community version doesn't support persistence. There are docker images such as [this one](https://github.com/GREsau/localstack-persist) that attempts to solve this problem, but it's built by the community making it risky.
 
+There are 2 users created by default; their usernames are `testuer` and `testuser2`. Both of their passwords are `test`.
+
 # View and interact
 
 The client should be accessible on `https://localhost:5213`, the server on `https://localhost:5313`, and keycloak on `https://localhost:8443` if you're running in the development environment. Otherwise, it's `https://client.solidstore.localhost` and `https://server.solidstore.localhost`, `https://keycloak.solidstore.localhost` respectively.
@@ -192,3 +194,4 @@ FileNotFoundError: [Errno 2] No such file or directory: '/etc/localstack/init/re
 If you get the above error, and you're on Windows, it's most likely that the `localstack-setup.sh` or `localstacks-setup-prod.sh` scripts, which are meant to be copied into the localstack containers, have CRLF sequence instead LF sequence. `localstack` does not like this, and it gives you an error.
 
 To fix this, just go to both files, and change the line endings. In VS Code, you can do so by clicking on the CRLF or LF buttons in the bottom right corner.
+
