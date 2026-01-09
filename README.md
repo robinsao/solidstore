@@ -34,7 +34,7 @@ Table of contents:
 
 Clone the project
 
-```
+```sh
 git clone https://github.com/robinsao/solidstore
 
 pnpm i
@@ -61,7 +61,7 @@ You have 2 ways to run the project:
 
 - S3: Add the following CORS policy.
 
-  ```
+  ```json
   [
       {
           "AllowedHeaders": [
@@ -106,7 +106,7 @@ Prerequisites:
 
 You can run the production-version as follows:
 
-```
+```sh
 # Run the production-version
 docker compose up -d
 
@@ -116,14 +116,14 @@ docker compose down
 
 There's also the development environment:
 
-```
+```sh
 # Start the development version
 docker compose -f compose.dev.yaml up --watch
 
 # Shutdown
 docker compose -f compose.dev.yaml down
 
-# Then run your frontend and backend separately on your host machine:
+# After the containers are running, run your frontend and backend separately on your host machine:
 cd <replace_with_client_dir_or_server_dir>
 pnpm dev
 ```
@@ -134,7 +134,7 @@ The dev environment doesn't run the frontend and backend as containers. Next.js 
 
 If you wanna use `localstack` and `keycloak`, run
 
-```
+```sh
 # use the "compose.zero-int.yaml" file to run the production version
 docker compose -f compose.zero-int.dev.yaml up --watch
 
@@ -143,14 +143,14 @@ docker compose -f compose.zero-int.dev.yaml up --watch
 # Shutdown with
 docker compose -f compose.zero-int.dev.yaml down
 
-# If you're using the development version, you then need to run your frontend and backend separately on your host machine:
+# If you're using the development version, you then need to run your frontend and backend separately on your host machine after the containers are started:
 cd <replace_with_client_dir_or_server_dir>
 pnpm dev
 ```
 
 It's a bummer `localstack` community version doesn't support persistence. There are docker images such as [this one](https://github.com/GREsau/localstack-persist) that attempts to solve this problem, but it's built by the community making it risky.
 
-There are 2 users created by default; their usernames are `testuer` and `testuser2`. Both of their passwords are `test`.
+There are 2 users created by default; their usernames are `testuser` and `testuser2`. Both of their passwords are `test`.
 
 # View and interact
 
