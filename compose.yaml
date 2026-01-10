@@ -9,7 +9,7 @@ services:
       target: prodrunner
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.2
+        ipv4_address: 192.168.12.2
     extra_hosts:
       - "server.solidstore.localhost:host-gateway"
     depends_on:
@@ -25,7 +25,7 @@ services:
       dockerfile: server/server.Dockerfile
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.3
+        ipv4_address: 192.168.12.3
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,7 +40,7 @@ services:
       - ./db/docker/data:/var/lib/postgresql/18/docker
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.4
+        ipv4_address: 192.168.12.4
 
   caddy:
     extra_hosts:
@@ -57,7 +57,7 @@ services:
       - 443:443
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.5
+        ipv4_address: 192.168.12.5
 
 networks:
   solidstore-network:
@@ -66,6 +66,6 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 192.168.0.0/24
-          ip_range: 192.168.0.0/24
-          gateway: 192.168.0.1
+        - subnet: 192.168.12.0/24
+          ip_range: 192.168.12.0/24
+          gateway: 192.168.12.1

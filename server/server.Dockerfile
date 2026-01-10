@@ -19,4 +19,4 @@ EXPOSE 3010
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --start-interval=5s --retries=4 CMD [ "curl", "http://localhost:3010" ]
 
-CMD curl http://192.168.0.5:2020/root.crt > /app/caddy-root.crt && NODE_EXTRA_CA_CERTS=/app/caddy-root.crt pnpm docker-run
+CMD curl http://192.168.12.5:2020/root.crt > /app/caddy-root.crt && NODE_EXTRA_CA_CERTS=/app/caddy-root.crt pnpm docker-run

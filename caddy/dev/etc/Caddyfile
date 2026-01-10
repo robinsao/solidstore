@@ -15,7 +15,7 @@ localhost:8443 {
 }
 
 # Presents the root certificate
-http://192.168.0.5:2020 {
+http://192.168.12.5:2020 {
 	file_server {
 		root /data/caddy/pki/authorities/local
 		hide *.key

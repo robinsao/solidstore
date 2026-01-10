@@ -20,7 +20,7 @@ services:
       - 5432:5432
     networks:
       solidstore-network-dev:
-        ipv4_address: 192.168.0.4
+        ipv4_address: 192.168.12.4
 
   caddy-dev:
     extra_hosts:
@@ -39,7 +39,7 @@ services:
       - 8443:8443
     networks:
       solidstore-network-dev:
-        ipv4_address: 192.168.0.5
+        ipv4_address: 192.168.12.5
 
   localstack-dev:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -90,7 +90,7 @@ services:
         condition: service_healthy
     networks:
       solidstore-network-dev:
-        ipv4_address: 192.168.0.6
+        ipv4_address: 192.168.12.6
     healthcheck:
       test:
         ["CMD-SHELL", "curl -fsSL http://127.0.0.1:9000/health/ready || exit 1"]
@@ -111,7 +111,7 @@ services:
       - ./keycloak-db:/var/lib/postgresql/18/docker
     networks:
       solidstore-network-dev:
-        ipv4_address: 192.168.0.7
+        ipv4_address: 192.168.12.7
     healthcheck:
       test:
         [
@@ -129,6 +129,6 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 192.168.0.0/24
-          ip_range: 192.168.0.0/24
-          gateway: 192.168.0.1
+        - subnet: 192.168.12.0/24
+          ip_range: 192.168.12.0/24
+          gateway: 192.168.12.1

@@ -9,7 +9,7 @@ services:
       target: prodrunner
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.2
+        ipv4_address: 192.168.12.2
     extra_hosts:
       - "server.solidstore.localhost:host-gateway"
       - "keycloak.solidstore.localhost:host-gateway"
@@ -30,7 +30,7 @@ services:
       dockerfile: server/server.Dockerfile
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.3
+        ipv4_address: 192.168.12.3
     extra_hosts:
       - "keycloak.solidstore.localhost:host-gateway"
     depends_on:
@@ -49,7 +49,7 @@ services:
     # - ./db/docker/data:/var/lib/postgresql/18/docker
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.4
+        ipv4_address: 192.168.12.4
 
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -93,7 +93,7 @@ services:
       - 443:443
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.5
+        ipv4_address: 192.168.12.5
 
   keycloak:
     container_name: keycloak
@@ -117,7 +117,7 @@ services:
         condition: service_healthy
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.6
+        ipv4_address: 192.168.12.6
     healthcheck:
       test:
         [
@@ -141,7 +141,7 @@ services:
       - ./keycloak-prod-db:/var/lib/postgresql/18/docker
     networks:
       solidstore-network:
-        ipv4_address: 192.168.0.7
+        ipv4_address: 192.168.12.7
     healthcheck:
       test:
         [
@@ -159,6 +159,6 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 192.168.0.0/24
-          ip_range: 192.168.0.0/24
-          gateway: 192.168.0.1
+        - subnet: 192.168.12.0/24
+          ip_range: 192.168.12.0/24
+          gateway: 192.168.12.1

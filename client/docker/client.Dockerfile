@@ -5,7 +5,7 @@ RUN corepack enable
 RUN apt-get update && \
     apt-get install -y curl
 
-HEALTHCHECK --interval=20s --timeout=30s --retries=3 CMD [ "curl", "http://192.168.0.5:2020/root.crt" ]
+HEALTHCHECK --interval=20s --timeout=30s --retries=3 CMD [ "curl", "http://192.168.12.5:2020/root.crt" ]
 
 FROM base AS nodedeps
 WORKDIR /app
@@ -36,4 +36,4 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 
-CMD ["sh", "-c", "curl http://192.168.0.5:2020/root.crt > /app/caddy-root.crt && NODE_EXTRA_CA_CERTS=/app/caddy-root.crt node server.js"]
+CMD ["sh", "-c", "curl http://192.168.12.5:2020/root.crt > /app/caddy-root.crt && NODE_EXTRA_CA_CERTS=/app/caddy-root.crt node server.js"]
