@@ -57,7 +57,7 @@ function FileItem({
           className
         )}
       >
-        <div data-test="file-item" className="h-full flex items-center">
+        <div data-test="file-item" className="h-full flex items-center dark:text-background">
           <MdAttachFile className="text-xl inline mx-4" />
           <span className="text-sm">{name}</span>
         </div>

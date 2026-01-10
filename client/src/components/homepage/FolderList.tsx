@@ -52,7 +52,7 @@ function FolderItem({
         className={cn("h-11 block rounded-xl bg-green-300", className)}
       >
         <Link
-          className="h-full flex items-center cursor-pointer"
+          className="h-full dark:text-background flex items-center cursor-pointer"
           href={`/app/${id}`}
           prefetch={false}
           data-test="folder-item"
