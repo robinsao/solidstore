@@ -2,23 +2,21 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import db from "../db";
 import { File } from "../entities/file";
 import {
-  S3Client,
   GetObjectCommand,
   PutObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
+import s3Client from "../utils/s3";
 
 const bucketName = process.env.BUCKET_NAME;
 
 export async function getFileDownloadUrl({
   userId,
   fileId,
-  s3Client,
   downloadExpirationSeconds,
 }: {
   userId: string;
   fileId: string;
-  s3Client: S3Client;
   downloadExpirationSeconds: number;
 }): Promise<{ url?: string }> {
   let existsRes;
@@ -54,13 +52,11 @@ export async function getFileUploadUrl({
   userId,
   fileId,
   contentType,
-  s3Client,
   uploadExpirationSeconds,
 }: {
   userId: string;
   fileId: string;
   contentType: string;
-  s3Client: S3Client;
   uploadExpirationSeconds: number;
 }) {
   const uploadCmd = new PutObjectCommand({
@@ -105,11 +101,9 @@ export async function completeUpload({
 export async function deleteFile({
   userId,
   fileId,
-  s3Client,
 }: {
   userId: string;
   fileId: string;
-  s3Client: S3Client;
 }) {
   // Check that the file exists
   let fileDbRes;

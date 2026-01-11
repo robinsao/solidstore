@@ -10,11 +10,6 @@ import {
 import { checkIsOwner } from "../middlewares/auth";
 import { requiredScopes } from "express-oauth2-jwt-bearer";
 
-// S3 configuration
-const s3Client = new S3Client({
-  endpoint: process.env.AWS_S3_ENDPOINT,
-  region: process.env.BUCKET_REGION,
-});
 // Maximum time of multipart file uplaods
 const UPLOAD_URL_EXPIRATION_SECONDS = 120;
 const DOWNLOAD_URL_EXPIRATION_SECONDS = 120;
@@ -35,7 +30,6 @@ router.get(
       const { url } = await getFileDownloadUrl({
         userId,
         fileId,
-        s3Client,
         downloadExpirationSeconds: DOWNLOAD_URL_EXPIRATION_SECONDS,
       });
 
@@ -92,7 +86,6 @@ router.get(
         userId,
         fileId,
         contentType,
-        s3Client,
         uploadExpirationSeconds: UPLOAD_URL_EXPIRATION_SECONDS,
       });
       res.status(StatusCodes.OK).send({ url, fileId });
@@ -107,7 +100,7 @@ async function handleFileDelete(req: Request, res: Response, _: NextFunction) {
   const userId = req.user;
 
   try {
-    await deleteFile({ userId, fileId, s3Client });
+    await deleteFile({ userId, fileId });
     res.sendStatus(StatusCodes.NO_CONTENT);
   } catch (e) {
     if (e.message === "Not found") {

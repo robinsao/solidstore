@@ -2,14 +2,8 @@ import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { requiredScopes } from "express-oauth2-jwt-bearer";
 import { deleteFileOrFolder, getPath } from "../services/file-item.service";
-import { S3Client } from "@aws-sdk/client-s3";
 
 const router = Router();
-
-const s3Client = new S3Client({
-  endpoint: process.env.AWS_S3_ENDPOINT,
-  region: process.env.BUCKET_REGION,
-});
 
 router.get(
   "/:fileItemId/path",
@@ -38,7 +32,7 @@ router.delete(
 
     // Check that the file exists
     try {
-      await deleteFileOrFolder({ id: fileItemId, userId: ownerId, s3Client });
+      await deleteFileOrFolder({ id: fileItemId, userId: ownerId });
       res.sendStatus(StatusCodes.NO_CONTENT);
     } catch (e) {
       if (e.message === "Not found") res.sendStatus(StatusCodes.NOT_FOUND);
