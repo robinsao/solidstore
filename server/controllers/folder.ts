@@ -83,7 +83,7 @@ async function handleFolderDelete(
   const { fileId } = req.params;
 
   try {
-    await deleteFolder(fileId);
+    await deleteFolder({ fileId, userId: req.user });
     res.sendStatus(StatusCodes.NO_CONTENT);
   } catch (e) {
     if (e.message === "Not found") res.sendStatus(StatusCodes.NOT_FOUND);

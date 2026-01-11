@@ -69,7 +69,7 @@ export async function deleteFileOrFolder({
 
   if (fileDbRes === null) throw new Error("Not found");
 
-  if (fileDbRes.type === "folder") await deleteFolder(id);
+  if (fileDbRes.type === "folder") await deleteFolder({ fileId: id, userId });
   else await deleteFile({ userId, fileId: id });
 }
 
