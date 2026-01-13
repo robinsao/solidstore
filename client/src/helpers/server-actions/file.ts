@@ -1,8 +1,17 @@
 "use server";
 import { fetchWithAuthFromServer } from "@/helpers/backend-helpers";
 import { revalidatePath } from "next/cache";
+import {
+  FetchFolderPathResponse,
+  CreateFolderResponse,
+  FetchFilesResponse,
+  DownloadUrlResponse,
+  UploadUrlAndIdResponse,
+} from "./types";
 
-async function fetchFolderPath(folderId: string) {
+async function fetchFolderPath(
+  folderId: string
+): Promise<FetchFolderPathResponse> {
   if (!folderId) return [];
   const path = await fetchWithAuthFromServer(
     `${process.env.BACKEND_PB_DOMAIN_NAME}/folders/${folderId}/path`,
@@ -16,7 +25,7 @@ async function fetchFolderPath(folderId: string) {
   return path?.path;
 }
 
-async function createFolder(data: FormData) {
+async function createFolder(data: FormData): Promise<CreateFolderResponse> {
   const name = data.get("name");
   const parentFolderID = data.get("parentFolderID");
 
@@ -37,7 +46,7 @@ async function createFolder(data: FormData) {
   return res;
 }
 
-export async function fetchFiles(dir: string) {
+export async function fetchFiles(dir: string): Promise<FetchFilesResponse> {
   const response = await fetchWithAuthFromServer(
     `${process.env.BACKEND_PB_DOMAIN_NAME}/folders/${
       dir ? encodeURIComponent(dir) + "/" : ""
@@ -52,14 +61,7 @@ export async function fetchFiles(dir: string) {
       return { files: [] };
     });
 
-  return JSON.parse(JSON.stringify(response as FilesResponse));
-}
-interface FilesResponse {
-  files: Array<{
-    name: string;
-    id: string;
-    isFolder: boolean;
-  }>;
+  return JSON.parse(JSON.stringify(response));
 }
 
 async function deleteFileItem({
@@ -83,7 +85,9 @@ async function deleteFileItem({
   return res;
 }
 
-async function getDownloadUrl(id: string) {
+async function getDownloadUrl(
+  id: string
+): Promise<DownloadUrlResponse | { err: string }> {
   let err;
 
   const { url } = await fetchWithAuthFromServer(
@@ -107,7 +111,7 @@ async function getUploadUrlAndId(
   parentFolderID: string,
   fileName: string,
   fileType: string
-) {
+): Promise<UploadUrlAndIdResponse | { err: string }> {
   const parentFolderIDURLSegment = parentFolderID ? `/${parentFolderID}` : "";
 
   // Get presigned URL
@@ -147,7 +151,7 @@ async function completeUpload(
   parentFolderID: string,
   fileId: string,
   fileName: string
-) {
+): Promise<{ err?: string }> {
   const parentFolderIDURLSegment = parentFolderID ? `/${parentFolderID}` : "";
 
   let err;
