@@ -1,13 +1,10 @@
 "use client";
 import { ChangeEvent, MouseEvent, useContext, useRef, useState } from "react";
 
-import {
-  completeUpload,
-  getUploadUrlAndId,
-} from "@/helpers/server-actions/file";
-import { useCurrFolderID } from "@/helpers/hooks";
+import { useCurrFolderID, useFileUpload } from "@/helpers/hooks";
 import { FilesContext } from "./Contexts";
 import FilesPreview from "./FilesPreview";
+import UploadProgressAlert from "./UploadProgressAlert";
 
 export default function UploadFileButton() {
   // Ref to the <input type="file"> element
@@ -27,6 +24,8 @@ export default function UploadFileButton() {
     files: [],
     setFiles: null,
   };
+
+  const { handleUpload } = useFileUpload();
 
   function handleSelectFiles(_: MouseEvent<HTMLButtonElement>): void {
     filesInputElement.current?.click();
@@ -50,68 +49,18 @@ export default function UploadFileButton() {
     setFilesSelected(filesSelected.toSpliced(fileIdx, 1));
   }
 
-  async function handleUpload(fd: FormData) {
-    const filesToUpload = fd.getAll("files") as File[];
-
-    const completed = [];
-
-    for (const f of filesToUpload) {
-      let err;
-
-      // Get presigned URL
-      const urlAndId = await getUploadUrlAndId(currFolderID, f.name, f.type);
-      if (urlAndId.err) break;
-
-      // Upload to the presigned URL
-      const uploadHeaders = new Headers();
-      uploadHeaders.set("Content-Length", f.size.toString());
-      await fetch(urlAndId.url, {
-        headers: uploadHeaders,
-        method: "PUT",
-        body: f,
-      }).then(async (res) => {
-        if (res.status >= 400) {
-          const reason = await res.text();
-          console.log(
-            `UploadFile.handleUpload: Uploading file to presigned URL gave ${res.status}, ${reason}`,
-          );
-          err = reason;
-        }
-      });
-
-      if (err) break;
-
-      // Complete upload
-      const completeUploadRes = await completeUpload(
-        currFolderID,
-        urlAndId.fileId,
-        f.name,
-      );
-      if (completeUploadRes.err) break;
-
-      completed.push({
-        name: f.name,
-        id: urlAndId.fileId,
-      });
-    }
-
-    if (setFiles)
-      setFiles(
-        files.concat(
-          completed.map((f) => {
-            return {
-              id: f.id,
-              name: f.name,
-              isFolder: false,
-            };
-          }),
-        ),
-      );
-  }
-
   return (
     <>
-      <form ref={formElement} className="hidden" action={handleUpload}>
+      <form
+        ref={formElement}
+        className="hidden"
+        action={async (fd) => {
+          const completed = await handleUpload(fd, currFolderID);
+          if (setFiles) {
+            setFiles([...files, ...completed]);
+          }
+        }}
+      >
         <input
           name="files"
           className="hidden"

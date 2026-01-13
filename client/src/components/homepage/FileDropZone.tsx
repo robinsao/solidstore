@@ -3,22 +3,18 @@ import { DragEvent, ReactNode, useContext, useState } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popover";
 import FilesPreview from "./FilesPreview";
-import { useCurrFolderID } from "@/helpers/hooks";
+import { useCurrFolderID, useFileUpload } from "@/helpers/hooks";
 import { FilesContext } from "./Contexts";
-
-import {
-  completeUpload,
-  getUploadUrlAndId,
-} from "@/helpers/server-actions/file";
 
 export default function FileDropZone({ children }: { children: ReactNode }) {
   // const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPopoveropen, setIsPopoverOpen] = useState(false);
   const currFolderID = useCurrFolderID();
   const [files, setFiles] = useState<Array<File>>([]);
+  const { progress: filesUploadProgress, handleUpload } = useFileUpload();
 
   const { files: allFiles, setFiles: setAllFiles } = useContext(
-    FilesContext,
+    FilesContext
   ) || {
     files: [],
     setFiles: null,
@@ -34,8 +30,8 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
       return;
 
     const uploadedFiles: Array<File> = [];
-    for (let i = 0; i < event.dataTransfer.files.length; i++) {
-      const f = event.dataTransfer.files.item(i);
+    for (let i = 0; i < event.dataTransfer.items.length; i++) {
+      const f = event.dataTransfer.items[i].getAsFile();
       if (f !== null) uploadedFiles.push(f);
     }
     setFiles(uploadedFiles);
@@ -61,53 +57,22 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
   }
 
   async function handleSubmitFiles() {
-    const completed = new Array<{ name: string; id: string }>();
-    for (const f of files) {
-      let err;
-
-      // Get presigned URL
-      const urlAndId = await getUploadUrlAndId(currFolderID, f.name, f.type);
-      if (urlAndId.err) break;
-
-      // Upload to the presigned URL
-      const uploadHeaders = new Headers();
-      uploadHeaders.set("Content-Length", f.size.toString());
-      await fetch(urlAndId.url, {
-        headers: uploadHeaders,
-        method: "PUT",
-        body: f,
-      }).then(async (res) => {
-        if (res.status >= 400) {
-          const reason = await res.text();
-          console.log(
-            `UploadFile.handleUpload: Uploading file to presigned URL gave ${res.status}, ${reason}`,
-          );
-          err = reason;
-        }
-      });
-
-      if (err) break;
-
-      // Complete upload
-      const completeUploadRes = await completeUpload(
-        currFolderID,
-        urlAndId.fileId,
-        f.name,
-      );
-      if (completeUploadRes.err) break;
-
-      completed.push({ id: urlAndId.fileId, name: f.name });
-    }
-
+    var fd = new FormData();
+    files.forEach((file) => {
+      fd.append("files", file);
+    });
     setFiles([]);
     setIsPopoverOpen(false);
+
+    const completed = await handleUpload(fd, currFolderID);
+
     if (setAllFiles)
       setAllFiles(
         allFiles.concat(
           completed.map((f) => {
             return { id: f.id, name: f.name, isFolder: false };
-          }),
-        ),
+          })
+        )
       );
   }
 
