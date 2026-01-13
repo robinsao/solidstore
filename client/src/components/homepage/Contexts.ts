@@ -1,3 +1,4 @@
+import { ProgressFilesToUpload } from "@/helpers/types";
 import { createContext } from "react";
 
 const FileItemToDeleteContext = createContext<null | {
@@ -17,7 +18,7 @@ const FilesContext = createContext<null | {
       name: string;
       id: string;
       isFolder: boolean;
-    }>,
+    }>
   ) => void;
   files: Array<{
     name: string;
@@ -26,6 +27,10 @@ const FilesContext = createContext<null | {
   }>;
   isFinishFetchFiles: boolean;
   setIsFinishFetchFiles: (state: boolean) => void;
+  filesUploadProgress: ProgressFilesToUpload;
+  setFilesUploadProgress: React.Dispatch<
+    React.SetStateAction<ProgressFilesToUpload>
+  >;
 }>(null);
 
 export { PageStateContext, FilesContext, FileItemToDeleteContext };
