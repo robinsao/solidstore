@@ -1,17 +1,60 @@
 "use client";
-import { DragEvent, ReactNode, useContext, useState } from "react";
+import {
+  DragEvent,
+  ReactNode,
+  RefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popover";
 import FilesPreview from "./FilesPreview";
 import { useCurrFolderID, useFileUpload } from "@/helpers/hooks";
 import { FilesContext } from "./Contexts";
 
+function usePreventDefaultOnWindow(dropZone: RefObject<HTMLElement | null>) {
+  // Default browser behavior is to open the file in new tab
+  function preventDefaultDropEvt(e: DragEvent) {
+    if ([...e.dataTransfer.items].some((item) => item.kind === "file")) {
+      e.preventDefault();
+    }
+  }
+
+  // Default browser behavior prevents dropping
+  function preventDefaultDragOverEvt(e: DragEvent) {
+    const fileItems = [...e.dataTransfer.items].filter(
+      (item) => item.kind === "file"
+    );
+    if (fileItems.length > 0) {
+      e.preventDefault();
+      if (dropZone.current && !dropZone.current.contains(e.target as Node)) {
+        e.dataTransfer.dropEffect = "none";
+      }
+    }
+  }
+
+  useEffect(() => {
+    // @ts-ignore
+    window.addEventListener("drop", preventDefaultDropEvt);
+    // @ts-ignore
+    window.addEventListener("dragover", preventDefaultDragOverEvt);
+    return () => {
+      // @ts-ignore
+      window.removeEventListener("drop", preventDefaultDropEvt);
+      // @ts-ignore
+      window.removeEventListener("dragover", preventDefaultDragOverEvt);
+    };
+  }, []);
+}
+
 export default function FileDropZone({ children }: { children: ReactNode }) {
-  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const dropZone = useRef<HTMLDivElement>(null);
   const [isPopoveropen, setIsPopoverOpen] = useState(false);
   const currFolderID = useCurrFolderID();
   const [files, setFiles] = useState<Array<File>>([]);
-  const { progress: filesUploadProgress, handleUpload } = useFileUpload();
+  const { handleUpload } = useFileUpload();
 
   const { files: allFiles, setFiles: setAllFiles } = useContext(
     FilesContext
@@ -19,6 +62,9 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
     files: [],
     setFiles: null,
   };
+
+  usePreventDefaultOnWindow(dropZone);
+  const dragEnterLeaveCt = useRef<number>(0);
 
   function handleDrop(event: DragEvent<HTMLDivElement>): void {
     event.stopPropagation();
@@ -39,20 +85,26 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
   }
 
   function handleDragEnter(event: DragEvent<HTMLDivElement>): void {
-    event.stopPropagation();
-    event.preventDefault();
+    dragEnterLeaveCt.current += 1;
+    if (dragEnterLeaveCt.current > 1) return;
+    console.log("drag enter");
+
     setIsPopoverOpen(true);
   }
 
   function handleDragLeave(event: DragEvent<HTMLDivElement>): void {
-    event.stopPropagation();
-    event.preventDefault();
+    dragEnterLeaveCt.current -= 1;
+    if (dragEnterLeaveCt.current > 0) return;
+    console.log("drag leave");
+
     setIsPopoverOpen(false);
   }
-
   function handleDragover(event: DragEvent<HTMLDivElement>): void {
-    event.stopPropagation();
+    const fileItems = [...event.dataTransfer.items];
+    if (fileItems.some((item) => item.kind !== "file")) return;
+
     event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
     setIsPopoverOpen(true);
   }
 
@@ -82,6 +134,7 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
 
   return (
     <div
+      ref={dropZone}
       onDragEnter={handleDragEnter}
       onDrop={handleDrop}
       onDragLeave={handleDragLeave}
