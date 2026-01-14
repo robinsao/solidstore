@@ -4,6 +4,8 @@ import FileDropZone from "@/components/homepage/FileDropZone";
 import { fetchFiles } from "@/helpers/server-actions/file";
 import { ReactElement, useState, useEffect } from "react";
 import { FilesContext, PageStateContext } from "./Contexts";
+import { ProgressFilesToUpload } from "@/helpers/types";
+import UploadProgressAlert from "./UploadProgressAlert";
 
 export function PageContainer({
   children,
@@ -13,10 +15,12 @@ export function PageContainer({
   dir: string;
 }) {
   const [files, setFiles] = useState(
-    new Array<{ name: string; id: string; isFolder: boolean }>(),
+    new Array<{ name: string; id: string; isFolder: boolean }>()
   );
   const [isFinishFetchFiles, setIsFinishFetchFiles] = useState(false);
   const [createFolderPopoverOpen, setCreateFolderPopoverOpen] = useState(false);
+  const [filesUploadProgress, setFilesUploadProgress] =
+    useState<ProgressFilesToUpload | null>(null);
 
   useEffect(() => {
     fetchFiles(dir).then((res) => {
@@ -32,6 +36,8 @@ export function PageContainer({
         setFiles,
         isFinishFetchFiles,
         setIsFinishFetchFiles,
+        filesUploadProgress,
+        setFilesUploadProgress,
       }}
     >
       <FileDropZone>
@@ -41,7 +47,11 @@ export function PageContainer({
             isCreateFolderPopoverOpen: createFolderPopoverOpen,
           }}
         >
-          <div className="h-full">{children}</div>
+          <div className="h-full">
+            {children}
+
+            <UploadProgressAlert />
+          </div>
         </PageStateContext.Provider>
       </FileDropZone>
     </FilesContext.Provider>
