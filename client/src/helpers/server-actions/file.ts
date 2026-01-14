@@ -13,14 +13,16 @@ async function fetchFolderPath(
   folderId: string
 ): Promise<FetchFolderPathResponse> {
   if (!folderId) return [];
-  const path = await fetchWithAuthFromServer(
+  const res = await fetchWithAuthFromServer(
     `${process.env.BACKEND_PB_DOMAIN_NAME}/folders/${folderId}/path`,
     { method: "GET" }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      console.log(`Error fetching breadcrumbs: ${err}`);
-    });
+  );
+  if (!res.ok)
+    throw new Error(
+      `Failed to fetch folder path for folder ID ${folderId} - ${await res.text()}`
+    );
+
+  const path = await res.json();
 
   return path?.path;
 }
@@ -29,39 +31,39 @@ async function createFolder(data: FormData): Promise<CreateFolderResponse> {
   const name = data.get("name");
   const parentFolderID = data.get("parentFolderID");
 
-  const res = JSON.parse(
-    JSON.stringify(
-      await fetchWithAuthFromServer(
-        `${process.env.BACKEND_PB_DOMAIN_NAME}/folders${
-          parentFolderID ? `/${parentFolderID}` : ""
-        }/${name}`,
-        {
-          method: "POST",
-        }
-      ).then((res) => res.json())
-    )
+  const res = await fetchWithAuthFromServer(
+    `${process.env.BACKEND_PB_DOMAIN_NAME}/folders${
+      parentFolderID ? `/${parentFolderID}` : ""
+    }/${name}`,
+    {
+      method: "POST",
+    }
   );
+  if (!res.ok)
+    throw new Error(`Failed to create folder ${name} - ${await res.text()}`);
+
+  const resData = JSON.parse(JSON.stringify(await res.json()));
 
   revalidatePath(`/app/${parentFolderID}`, "page");
-  return res;
+  return resData;
 }
 
 export async function fetchFiles(dir: string): Promise<FetchFilesResponse> {
-  const response = await fetchWithAuthFromServer(
+  const res = await fetchWithAuthFromServer(
     `${process.env.BACKEND_PB_DOMAIN_NAME}/folders/${
       dir ? encodeURIComponent(dir) + "/" : ""
     }content`,
     {
       method: "GET",
     }
-  )
-    .then((res) => res.json())
-    .catch((reason) => {
-      console.log(reason);
-      return { files: [] };
-    });
+  );
+  if (!res.ok)
+    throw new Error(
+      `Failed to fetch files in folder ${dir} - ${await res.text()}`
+    );
+  const resData = JSON.parse(JSON.stringify(await res.json()));
 
-  return JSON.parse(JSON.stringify(response));
+  return resData;
 }
 
 async function deleteFileItem({
@@ -77,32 +79,27 @@ async function deleteFileItem({
     {
       method: "DELETE",
     }
-  )
-    .then((res) => res.text())
-    .catch((e) => console.log(e));
+  );
+  if (!res.ok)
+    throw new Error(
+      `Failed to delete file item ${fileId} - ${await res.text()}`
+    );
+  const resData = JSON.parse(JSON.stringify(await res.json()));
 
   revalidatePath(`/app${parentFolderIDURLSegment}`);
-  return res;
+  return resData;
 }
 
-async function getDownloadUrl(
-  id: string
-): Promise<DownloadUrlResponse | { err: string }> {
-  let err;
-
-  const { url } = await fetchWithAuthFromServer(
+async function getDownloadUrl(id: string): Promise<DownloadUrlResponse> {
+  const res = await fetchWithAuthFromServer(
     `${process.env.BACKEND_PB_DOMAIN_NAME}/files/${id}/download-url`,
     { method: "GET" }
-  ).then(async (r) => {
-    if (r.status >= 400) {
-      err = await r.text();
-      console.log(err);
-      return { url: "" };
-    }
-    return r.json();
-  });
-
-  if (err) return { err: err };
+  );
+  if (!res.ok)
+    throw new Error(
+      `Failed to get download URL for file ID ${id} - ${await res.text()}`
+    );
+  const { url } = await res.json();
 
   return JSON.parse(JSON.stringify({ url: url }));
 }
@@ -111,51 +108,38 @@ async function getUploadUrlAndId(
   parentFolderID: string,
   fileName: string,
   fileType: string
-): Promise<UploadUrlAndIdResponse | { err: string }> {
+): Promise<UploadUrlAndIdResponse> {
   const parentFolderIDURLSegment = parentFolderID ? `/${parentFolderID}` : "";
 
   // Get presigned URL
   const fetchUrlHeaders = new Headers();
   fetchUrlHeaders.set("Content-Type", fileType);
 
-  let err;
   const res = await fetchWithAuthFromServer(
     `${process.env.BACKEND_PB_DOMAIN_NAME}/files${parentFolderIDURLSegment}/${fileName}/upload-url`,
     {
       headers: fetchUrlHeaders,
       method: "GET",
     }
-  )
-    .then(async (res) => {
-      if (res.status >= 400) {
-        err = await res.json();
-        console.log(
-          `file-server-actions.uploadFile: Requesting presigned URL gave ${res.status} because ${err}`
-        );
-        return Promise.resolve({ url: null, id: null });
-      }
-      return res.json();
-    })
-    .catch((res) => {
-      err = res;
-      console.log(
-        `file-server-actions.uploadFile: Requesting presigned URL errored: ${res}`
-      );
-    });
+  );
 
-  if (err) return JSON.parse(JSON.stringify({ err: err }));
-  return JSON.parse(JSON.stringify(res));
+  if (!res.ok)
+    throw new Error(
+      `Failed to get upload URL for file ${fileName} - ${await res.text()}`
+    );
+
+  const resData = await res.json();
+  return JSON.parse(JSON.stringify(resData));
 }
 
 async function completeUpload(
   parentFolderID: string,
   fileId: string,
   fileName: string
-): Promise<{ err?: string }> {
+): Promise<void> {
   const parentFolderIDURLSegment = parentFolderID ? `/${parentFolderID}` : "";
 
-  let err;
-  await fetchWithAuthFromServer(
+  const res = await fetchWithAuthFromServer(
     `${process.env.BACKEND_PB_DOMAIN_NAME}/files${parentFolderIDURLSegment}/${fileId}/upload-completion`,
     {
       method: "POST",
@@ -164,16 +148,11 @@ async function completeUpload(
       },
       body: JSON.stringify({ fileName }),
     }
-  ).then(async (res) => {
-    if (res.status >= 400) {
-      err = await res.text();
-      console.log(
-        `file-server-actions.uploadFile: Finishing upload to presigned URL gave ${res.status}, ${err}`
-      );
-    }
-  });
-
-  if (err) return JSON.parse(JSON.stringify({ err: err }));
+  );
+  if (!res.ok)
+    throw new Error(
+      `Failed to complete upload for file ID ${fileId} - ${await res.text()}`
+    );
 
   revalidatePath(`/app${parentFolderID}`);
   return JSON.parse(JSON.stringify({}));

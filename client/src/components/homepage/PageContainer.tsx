@@ -6,6 +6,7 @@ import { ReactElement, useState, useEffect } from "react";
 import { FilesContext, PageStateContext } from "./Contexts";
 import { ProgressFilesToUpload } from "@/helpers/types";
 import UploadProgressAlert from "./UploadProgressAlert";
+import { FetchFilesResponse } from "@/helpers/server-actions/types";
 
 export function PageContainer({
   children,
@@ -14,9 +15,8 @@ export function PageContainer({
   children: ReactElement<any> | ReactElement<any>[];
   dir: string;
 }) {
-  const [files, setFiles] = useState(
-    new Array<{ name: string; id: string; isFolder: boolean }>()
-  );
+  const [files, setFiles] = useState<FetchFilesResponse["files"]>([]);
+
   const [isFinishFetchFiles, setIsFinishFetchFiles] = useState(false);
   const [createFolderPopoverOpen, setCreateFolderPopoverOpen] = useState(false);
   const [filesUploadProgress, setFilesUploadProgress] =

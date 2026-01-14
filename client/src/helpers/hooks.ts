@@ -27,18 +27,21 @@ function useFileUpload() {
     const filesToUpload = fd.getAll("files") as File[];
 
     const completed: { name: string; id: string }[] = [];
+    const errors: { fileName: string; err: any }[] = [];
     const promises = [];
 
     for (const f of filesToUpload) {
       // Get presigned URL
-      let urlAndId = await getUploadUrlAndId(currFolderID, f.name, f.type);
-      if ("err" in urlAndId) {
-        console.error(urlAndId.err);
+      let urlAndId;
+      try {
+        urlAndId = await getUploadUrlAndId(currFolderID, f.name, f.type);
+      } catch (err) {
+        errors.push({ fileName: f.name, err });
         continue;
       }
 
       promises.push(
-        new Promise<void>((resolve, reject) => {
+        new Promise<void>((resolve) => {
           const xhr = new XMLHttpRequest();
           xhr.upload.addEventListener("loadstart", () => {
             console.log(`Upload started ${f.name}`);
@@ -57,13 +60,15 @@ function useFileUpload() {
 
           xhr.upload.addEventListener("loadend", async () => {
             // Complete upload
-            const res = await completeUpload(
-              currFolderID,
-              urlAndId.fileId,
-              f.name
-            );
-            if (res.err) {
-              console.error(res.err);
+            try {
+              const res = await completeUpload(
+                currFolderID,
+                urlAndId.fileId,
+                f.name
+              );
+            } catch (e) {
+              errors.push({ fileName: f.name, err: e });
+              resolve();
               return;
             }
 
@@ -76,8 +81,8 @@ function useFileUpload() {
           });
 
           xhr.upload.addEventListener("error", (ev) => {
-            console.error(`Upload error ${f.name}`, ev);
-            reject(ev);
+            errors.push({ fileName: f.name, err: ev });
+            resolve();
           });
 
           xhr.open("PUT", urlAndId.url, true);
@@ -86,9 +91,14 @@ function useFileUpload() {
       );
     }
 
-    await Promise.all(promises).catch((err) => {
-      console.error(err);
-    });
+    await Promise.all(promises);
+    if (errors.length > 0) {
+      throw new AggregateError(
+        errors.map((e) => `${e.fileName} - ${e.err}`),
+        `${errors.length} Some files failed to upload`
+      );
+    }
+
     setProgress(null);
 
     console.log(`Completed: ${completed.length} files`);
