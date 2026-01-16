@@ -16,14 +16,16 @@ import { FilesContext } from "./Contexts";
 
 function usePreventDefaultOnWindow(dropZone: RefObject<HTMLElement | null>) {
   // Default browser behavior is to open the file in new tab
-  function preventDefaultDropEvt(e: DragEvent) {
+  function preventDefaultDropEvt(e: globalThis.DragEvent) {
+    if (!e.dataTransfer) return;
     if ([...e.dataTransfer.items].some((item) => item.kind === "file")) {
       e.preventDefault();
     }
   }
 
   // Default browser behavior prevents dropping
-  function preventDefaultDragOverEvt(e: DragEvent) {
+  function preventDefaultDragOverEvt(e: globalThis.DragEvent) {
+    if (!e.dataTransfer) return;
     const fileItems = [...e.dataTransfer.items].filter(
       (item) => item.kind === "file"
     );
@@ -35,18 +37,18 @@ function usePreventDefaultOnWindow(dropZone: RefObject<HTMLElement | null>) {
     }
   }
 
-  useEffect(() => {
-    // @ts-ignore
-    window.addEventListener("drop", preventDefaultDropEvt);
-    // @ts-ignore
-    window.addEventListener("dragover", preventDefaultDragOverEvt);
-    return () => {
-      // @ts-ignore
-      window.removeEventListener("drop", preventDefaultDropEvt);
-      // @ts-ignore
-      window.removeEventListener("dragover", preventDefaultDragOverEvt);
-    };
-  }, []);
+  useEffect(
+    () => {
+      window.addEventListener("drop", preventDefaultDropEvt);
+      window.addEventListener("dragover", preventDefaultDragOverEvt);
+      return () => {
+        window.removeEventListener("drop", preventDefaultDropEvt);
+        window.removeEventListener("dragover", preventDefaultDragOverEvt);
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 }
 
 export default function FileDropZone({ children }: { children: ReactNode }) {
@@ -84,7 +86,7 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
     setIsPopoverOpen(false);
   }
 
-  function handleDragEnter(event: DragEvent<HTMLDivElement>): void {
+  function handleDragEnter(): void {
     dragEnterLeaveCt.current += 1;
     if (dragEnterLeaveCt.current > 1) return;
     console.log("drag enter");
@@ -92,7 +94,7 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
     setIsPopoverOpen(true);
   }
 
-  function handleDragLeave(event: DragEvent<HTMLDivElement>): void {
+  function handleDragLeave(): void {
     dragEnterLeaveCt.current -= 1;
     if (dragEnterLeaveCt.current > 0) return;
     console.log("drag leave");
@@ -109,7 +111,7 @@ export default function FileDropZone({ children }: { children: ReactNode }) {
   }
 
   async function handleSubmitFiles() {
-    var fd = new FormData();
+    const fd = new FormData();
     files.forEach((file) => {
       fd.append("files", file);
     });

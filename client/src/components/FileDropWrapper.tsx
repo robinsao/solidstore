@@ -1,11 +1,11 @@
 "use client";
 
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 
 export default function FileDropWrapper({
   children,
 }: {
-  children: ReactElement<any> | ReactElement<any>[];
+  children: ReactNode[];
 }) {
   return (
     <div

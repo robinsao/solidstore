@@ -24,6 +24,7 @@ export async function getAccessToken() {
     secret: process.env.AUTH_SECRET,
     secureCookie: isSecure, // Dynamically set based on protocol
   });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   return token.access_token;
 }

@@ -2,7 +2,7 @@
 
 import FileDropZone from "@/components/homepage/FileDropZone";
 import { fetchFiles } from "@/helpers/server-actions/file";
-import { ReactElement, useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { FilesContext, PageStateContext } from "./Contexts";
 import { ProgressFilesToUpload } from "@/helpers/types";
 import UploadProgressAlert from "./UploadProgressAlert";
@@ -12,7 +12,7 @@ export function PageContainer({
   children,
   dir,
 }: {
-  children: ReactElement<any> | ReactElement<any>[];
+  children: ReactNode;
   dir: string;
 }) {
   const [files, setFiles] = useState<FetchFilesResponse["files"]>([]);

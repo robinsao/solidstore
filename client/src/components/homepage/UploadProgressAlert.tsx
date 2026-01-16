@@ -46,6 +46,7 @@ export default function UploadProgressAlert() {
   const [localFilesProgress, setLocalFilesProgress] = useState(filesProgress);
   useEffect(() => {
     if (filesProgress && Object.keys(filesProgress).length > 0)
+      // eslint-disable-next-line
       setLocalFilesProgress(filesProgress);
   }, [filesProgress]);
   const isCompleted = Object.values(localFilesProgress || {}).every(

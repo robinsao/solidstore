@@ -1,6 +1,6 @@
 "use client";
 
-import { MouseEvent, ReactElement, useContext } from "react";
+import { MouseEvent, ReactNode, useContext } from "react";
 import {
   MdArrowForward,
   MdAttachFile,
@@ -57,7 +57,10 @@ function FileItem({
           className
         )}
       >
-        <div data-test="file-item" className="h-full flex items-center dark:text-background">
+        <div
+          data-test="file-item"
+          className="h-full flex items-center dark:text-background"
+        >
           <MdAttachFile className="text-xl inline mx-4" />
           <span className="text-sm">{name}</span>
         </div>
@@ -97,13 +100,12 @@ function DownloadFileBtn({
   fileId,
   fileName,
 }: {
-  children: ReactElement<any>[] | ReactElement<any>;
+  children: ReactNode;
   fileId: string;
   fileName: string;
 }) {
   async function handleDownload(e: MouseEvent) {
     const res = await getDownloadUrl(fileId);
-    if (!res || res.err) return;
 
     const blob = await fetch(res.url, {
       headers: {},
@@ -135,21 +137,23 @@ function DownloadFileBtn({
 }
 
 function MoveFileBtn({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fileId,
   children,
 }: {
   fileId: string;
-  children: ReactElement<any>[] | ReactElement<any>;
+  children: ReactNode;
 }) {
   return <ContextMenuItem>{children}</ContextMenuItem>;
 }
 
 function FileInfoBtn({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fileId,
   children,
 }: {
   fileId: string;
-  children: ReactElement<any>[] | ReactElement<any>;
+  children: ReactNode;
 }) {
   return <ContextMenuItem>{children}</ContextMenuItem>;
 }
@@ -160,7 +164,7 @@ function DeleteFileBtn({
   fileId,
   fileName,
 }: {
-  children: ReactElement<any>[] | ReactElement<any>;
+  children: ReactNode;
   className: string;
   fileId: string;
   fileName: string;

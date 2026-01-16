@@ -51,7 +51,7 @@ function StyledBreadcrumb({
 }
 
 async function Breadcrumbs({ currDirId }: { currDirId: string }) {
-  let path = await fetchFolderPath(currDirId);
+  const path = await fetchFolderPath(currDirId);
   path.unshift({ id: "home", name: "Home" });
 
   return (

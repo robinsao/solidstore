@@ -21,13 +21,17 @@ function useFileUpload() {
   useEffect(() => {
     if (!filesContext) return;
     filesContext.setFilesUploadProgress(progress);
-  }, [progress]);
+  }, [progress, filesContext]);
 
   async function handleUpload(fd: FormData, currFolderID: string) {
     const filesToUpload = fd.getAll("files") as File[];
 
     const completed: { name: string; id: string }[] = [];
-    const errors: { fileName: string; err: any }[] = [];
+    const errors: {
+      fileName: string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      err: any;
+    }[] = [];
     const promises = [];
 
     for (const f of filesToUpload) {
@@ -61,11 +65,7 @@ function useFileUpload() {
           xhr.upload.addEventListener("loadend", async () => {
             // Complete upload
             try {
-              const res = await completeUpload(
-                currFolderID,
-                urlAndId.fileId,
-                f.name
-              );
+              await completeUpload(currFolderID, urlAndId.fileId, f.name);
             } catch (e) {
               errors.push({ fileName: f.name, err: e });
               resolve();

@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactElement, useContext, MouseEvent } from "react";
+import { useContext, MouseEvent, ReactNode } from "react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -95,13 +95,13 @@ function DeleteFolderBtn({
   folderId,
   folderName,
 }: {
-  children: ReactElement<any>[] | ReactElement<any>;
+  children: ReactNode;
   className: string;
   folderId: string;
   folderName: string;
 }) {
   const { setIsPopoverOpen, setFileItemToDelete } = useContext(
-    FileItemToDeleteContext,
+    FileItemToDeleteContext
   ) || {
     setPopoverOpen: null,
     setFileItemToDelete: null,
@@ -126,21 +126,23 @@ function DeleteFolderBtn({
 }
 
 function MoveFolderBtn({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   folderId,
   children,
 }: {
   folderId: string;
-  children: ReactElement<any>[] | ReactElement<any>;
+  children: ReactNode;
 }) {
   return <ContextMenuItem>{children}</ContextMenuItem>;
 }
 
 function FolderInfoBtn({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   folderId,
   children,
 }: {
   folderId: string;
-  children: ReactElement<any>[] | ReactElement<any>;
+  children: ReactNode;
 }) {
   return <ContextMenuItem>{children}</ContextMenuItem>;
 }

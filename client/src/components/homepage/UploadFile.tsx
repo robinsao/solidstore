@@ -4,7 +4,6 @@ import { ChangeEvent, MouseEvent, useContext, useRef, useState } from "react";
 import { useCurrFolderID, useFileUpload } from "@/helpers/hooks";
 import { FilesContext } from "./Contexts";
 import FilesPreview from "./FilesPreview";
-import UploadProgressAlert from "./UploadProgressAlert";
 
 export default function UploadFileButton() {
   // Ref to the <input type="file"> element

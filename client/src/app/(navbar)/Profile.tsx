@@ -1,5 +1,5 @@
 "use client";
-import { ReactElement, useState } from "react";
+import { ReactNode, useState } from "react";
 import Link from "next/link";
 import {
   Popover,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/Popover";
 import { useTheme } from "next-themes";
 
-export default function Profile({ children }: { children: ReactElement<any> }) {
+export default function Profile({ children }: { children: ReactNode }) {
   const [_, setIsOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
   return (
@@ -24,7 +24,14 @@ export default function Profile({ children }: { children: ReactElement<any> }) {
       >
         <form className="flex justify-between p-2">
           <label htmlFor="dark-mode-toggle">Dark Mode</label>
-          <input id="dark-mode-toggle" type="checkbox" onChange={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} checked={resolvedTheme === "dark"} />
+          <input
+            id="dark-mode-toggle"
+            type="checkbox"
+            onChange={() =>
+              setTheme(resolvedTheme === "dark" ? "light" : "dark")
+            }
+            checked={resolvedTheme === "dark"}
+          />
         </form>
         <Link
           href={"/settings"}

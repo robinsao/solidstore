@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactElement, useContext } from "react";
+import { ReactNode, useContext } from "react";
 import { ContextMenuItem } from "@/components/ui/context-menu";
 import {
   Popover,
@@ -77,7 +77,7 @@ function CreateFolderForm({
   children,
   parentFolderID,
 }: {
-  children: ReactElement<any> | ReactElement<any>[];
+  children: ReactNode[];
   parentFolderID: string;
 }) {
   const { setIsCreateFolderPopoverOpen } = useContext(PageStateContext) || {
@@ -103,7 +103,7 @@ function CreateFolderForm({
                 name: d.get("name") as string,
                 isFolder: true,
               },
-            ]),
+            ])
           );
         if (setIsCreateFolderPopoverOpen) setIsCreateFolderPopoverOpen(false);
       }}
