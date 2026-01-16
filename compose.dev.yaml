@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
       context: caddy
     volumes:
-      - ./caddy/dev:/etc/caddy
+      - ./caddy/dev/etc:/etc/caddy
       - ./caddy/dev/data:/data
       - ./caddy/dev/config:/config
     ports:
