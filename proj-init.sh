@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# Setup caddy certs
 COMPOSE_FILE="compose.zero-int.dev.yaml"
 SERVICE_NAME="caddy-dev"
 CADDY_DIR="./caddy/dev"
@@ -23,3 +25,8 @@ echo "caddy is healthy"
 docker compose -f $COMPOSE_FILE down
 
 sudo chown -R 1000:1000 $CADDY_DIR/data $CADDY_DIR/config
+
+# Setup keycloak
+mkdir -p keycloak-prod-data-dir
+# The above is needed because it's bind-mounted. Without the above, Linux-version of docker creates the directory with root ownership,
+# This leads to unexpected problems like the website not being styled properly
