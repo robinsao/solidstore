@@ -50,7 +50,7 @@ services:
       dockerfile: Dockerfile
       context: caddy
     volumes:
-      - ./caddy/prod:/etc/caddy
+      - ./caddy/prod/etc:/etc/caddy
       - ./caddy/prod/data:/data
       - ./caddy/prod/config:/config
     ports:
