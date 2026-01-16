@@ -84,10 +84,8 @@ async function deleteFileItem({
     throw new Error(
       `Failed to delete file item ${fileId} - ${await res.text()}`
     );
-  const resData = JSON.parse(JSON.stringify(await res.json()));
 
   revalidatePath(`/app${parentFolderIDURLSegment}`);
-  return resData;
 }
 
 async function getDownloadUrl(id: string): Promise<DownloadUrlResponse> {
