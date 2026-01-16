@@ -99,6 +99,15 @@ Configure the environment variables, and that's it!
 Prerequisites:
 
 - Make sure that you don't have a proxy configured in your browser. This means things like VPNs as browser extensions.
+- Generate certificates using the `./caddy-init.sh` script (note that you have to type in your password since it calls a sudo operation internally)
+
+  ```sh
+  # For dev env:
+  ./caddy-init.sh
+
+  # For prod env:
+  ./caddy-init.sh prod
+  ```
 
 **_Note: Always stop `compose` with Ctrl+C once for graceful shutdowns instead of pressing Ctrl+C multiple times_**
 
@@ -118,7 +127,7 @@ There's also the development environment:
 
 ```sh
 # Start the development version
-docker compose -f compose.dev.yaml up --watch
+docker compose -f compose.dev.yaml up
 
 # Shutdown
 docker compose -f compose.dev.yaml down
