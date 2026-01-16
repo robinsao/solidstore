@@ -1,5 +1,4 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { S3Client } from "@aws-sdk/client-s3";
 import { StatusCodes } from "http-status-codes";
 import {
   completeUpload,

@@ -73,23 +73,19 @@ export async function deleteFolder({
     throw e;
   }
 
-  try {
-    var content = await db.entityManager.find(File, {
-      where: { parentfolder: { id: fileId } },
-    });
+  const content = await db.entityManager.find(File, {
+    where: { parentfolder: { id: fileId } },
+  });
 
-    for (const file of content) {
-      if (file.type === "folder") {
-        await deleteFolder({ fileId: file.id, userId });
-      } else {
-        await deleteFile({ fileId: file.id, userId });
-        console.log("Deleted file: " + file.id);
-      }
+  for (const file of content) {
+    if (file.type === "folder") {
+      await deleteFolder({ fileId: file.id, userId });
+    } else {
+      await deleteFile({ fileId: file.id, userId });
+      console.log("Deleted file: " + file.id);
     }
-
-    await db.entityManager.delete(File, fileId);
-    console.log("Deleted folder: " + fileId);
-  } catch (e) {
-    throw e;
   }
+
+  await db.entityManager.delete(File, fileId);
+  console.log("Deleted folder: " + fileId);
 }

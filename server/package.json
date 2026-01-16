@@ -9,7 +9,7 @@
     "dev": "pnpm run try-migrate && dotenvx run -f .env -- ts-node run-app.ts",
     "test": "dotenvx run -f .env -- mocha",
     "typeorm": "dotenvx run -f .env -- typeorm-ts-node-commonjs",
-    "lint": "eslint ./**",
+    "lint": "eslint --no-cache .",
     "docker-run": "pnpm run try-migrate && dotenvx run -f .env -- ts-node run-app.ts",
     "prettier": "prettier --write ."
   },

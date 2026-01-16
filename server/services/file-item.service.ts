@@ -1,4 +1,3 @@
-import { S3Client } from "@aws-sdk/client-s3";
 import db from "../db";
 import { File } from "../entities/file";
 import { deleteFile } from "./file.service";
